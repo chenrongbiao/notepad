@@ -867,7 +867,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1510"/>
         <location filename="ui_ccnotepad.h" line="1473"/>
-        <source>go</source>
+        <source>Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1026,7 +1026,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="850"/>
         <location filename="ui_ccnotepad.h" line="1389"/>
-        <source>Php</source>
+        <source>PHP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1110,7 +1110,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="970"/>
         <location filename="ui_ccnotepad.h" line="1404"/>
-        <source>Virsual Basic</source>
+        <source>Visual Basic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1122,7 +1122,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="986"/>
         <location filename="ui_ccnotepad.h" line="1406"/>
-        <source>Css</source>
+        <source>CSS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1146,7 +1146,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1018"/>
         <location filename="ui_ccnotepad.h" line="1410"/>
-        <source>Tex</source>
+        <source>TeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1320,7 +1320,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1255"/>
         <location filename="ui_ccnotepad.h" line="1440"/>
-        <source>Nncrontab</source>
+        <source>NCrontab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1338,7 +1338,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1279"/>
         <location filename="ui_ccnotepad.h" line="1443"/>
-        <source>LaTex</source>
+        <source>LaTeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1448,7 +1448,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1428"/>
         <location filename="ui_ccnotepad.h" line="1462"/>
-        <source>json</source>
+        <source>JSON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1478,7 +1478,7 @@
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1476"/>
         <location filename="ui_ccnotepad.h" line="1468"/>
-        <source>Spice</source>
+        <source>SPICE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1985,7 +1985,7 @@
         <location filename="ui_ccnotepad.h" line="1567"/>
         <source>AboutNdd</source>
         <oldsource>About ndd</oldsource>
-        <translation type="unfinished">关于Ndd</translation>
+        <translation type="unfinished">关于 Ndd</translation>
     </message>
     <message>
         <source>info</source>
@@ -2206,7 +2206,7 @@
     </message>
     <message>
         <location filename="cceditor/ccnotepad.cpp" line="3535"/>
-        <source>Use &lt; (Pre) or &gt; (Next) and Goto Buttons to Change Page Num .</source>
+        <source>Use &lt; (Prev) or &gt; (Next) and Goto Buttons to Change Page Num .</source>
         <translation type="unfinished">使用工具栏按钮 &lt; (前一页） &gt;（下一页） Go(跳转) 进行翻页。</translation>
     </message>
     <message>
@@ -2286,13 +2286,13 @@ File Size %2 &gt; %3M, How to Open it ?</source>
     </message>
     <message>
         <location filename="cceditor/ccnotepad.cpp" line="8370"/>
-        <source>Xml format error, please check!</source>
-        <translation type="unfinished">Xml 格式化错误，请检查文件格式！</translation>
+        <source>XML format error, please check!</source>
+        <translation type="unfinished">XML 格式化错误，请检查文件格式！</translation>
     </message>
     <message>
         <location filename="cceditor/ccnotepad.cpp" line="8400"/>
-        <source>Json format error, please check!</source>
-        <translation type="unfinished">Json 格式化错误，请检查文件格式！</translation>
+        <source>JSON format error, please check!</source>
+        <translation type="unfinished">JSON 格式化错误，请检查文件格式！</translation>
     </message>
     <message>
         <source>The window background that has been opened will take effect after it is reopened.</source>
