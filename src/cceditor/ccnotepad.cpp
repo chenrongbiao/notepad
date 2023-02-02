@@ -1,4 +1,4 @@
-﻿#include <memory>
+#include <memory>
 #include "ccnotepad.h"
 #include "filemanager.h"
 #include "Encode.h"
@@ -469,6 +469,7 @@ FileExtLexer s_fileExtMapLexerId[FileExtMapLexerIdLen] = {
 {QString("pl"), L_PERL},
 {QString("rb"), L_RUBY},
 {QString("bat"), L_BATCH},
+{QString("cmd"), L_BATCH},
 {QString("go"), L_GO},
 {QString("txt"), L_TXT},
 {QString("pro"), L_INI},
