@@ -54,7 +54,7 @@ void ColumnEdit::slot_bigChar(bool isCheck)
 	ui.capital->setEnabled(isCheck);
 }
 
-//自动调整当前窗口的状态
+//锟皆讹拷锟斤拷锟斤拷锟斤拷前锟斤拷锟节碉拷状态
 QWidget* ColumnEdit::autoAdjustCurrentEditWin()
 {
 	QWidget* pw = m_editTabWidget->currentWidget();
@@ -93,7 +93,7 @@ void ColumnEdit::slot_ok()
 	QString prefix = ui.prefix->text();
 	bool isCapital = ui.capital->isChecked();
 
-	//是插入文本模式
+	//锟角诧拷锟斤拷锟侥憋拷模式
 	if (ui.textGroupBox->isChecked())
 	{
 
@@ -138,7 +138,7 @@ void ColumnEdit::slot_ok()
 		}
 		else
 		{
-			//这里要加个提示
+			//锟斤拷锟斤拷要锟接革拷锟斤拷示
 			QApplication::beep();
 			return;
 		}
@@ -209,20 +209,20 @@ void ColumnEdit::slot_ok()
 		lineText.chrg.cpMin = static_cast<Sci_Position>(lineBegin);
 		lineText.chrg.cpMax = static_cast<Sci_Position>(lineEnd);
 		lineText.lpstrText = lineData.data();
-		//获取原始行的内容
+		//锟斤拷取原始锟叫碉拷锟斤拷锟斤拷
 		pEdit->SendScintilla(SCI_GETTEXTRANGE, 0, &lineText);
 
 		if (lineEndCol < cursorCol)
 		{
 			QByteArray s_space(cursorCol - lineEndCol, ' ');
 			lineData.append(s_space);
-			lineData.append(text);
+			lineData.append(text.toUtf8());
 		}
 		else
 		{
 			int posAbs2Start = pEdit->execute(SCI_FINDCOLUMN, i, cursorCol);
 			int posRelative2Start = posAbs2Start - lineBegin;
-			lineData.insert(posRelative2Start, text);
+			lineData.insert(posRelative2Start, text.toUtf8());
 		}
 
 		pEdit->SendScintilla(SCI_SETTARGETRANGE, lineBegin, lineEnd);
