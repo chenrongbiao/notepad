@@ -25,7 +25,7 @@ debug:
 
 release:
 	mkdir -p build
-	cd build && cmake -DCMAKE_BUILD_TYPE=Release -DPACKAGE_SUFFIX="$(SUFFIX)" ..
+	cd build && cmake -DCMAKE_BUILD_TYPE=Release -DPLUGIN_EN=off -DPACKAGE_SUFFIX="$(SUFFIX)" ..
 	cd build && make -j$(CPUS)
 
 package: release
