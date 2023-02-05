@@ -4,7 +4,7 @@ project(notepad-- VERSION 1.22.0)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
-message(${CMAKE_PREFIX_PATH})
+
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Network PrintSupport XmlPatterns)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/qscint)
