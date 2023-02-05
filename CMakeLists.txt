@@ -4,18 +4,22 @@ project(notepad-- VERSION 1.22.0)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
-
+message(${CMAKE_PREFIX_PATH})
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Network PrintSupport XmlPatterns)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/qscint)
+add_definitions(-D_UNICODE -DUNICODE)
 
+if(${PLUGIN_EN}  STREQUAL on)
+add_definitions(-DNO_PLUGIN=1)
+endif(${PLUGIN_EN})
 
 file(GLOB UI_SRC ${PROJECT_SOURCE_DIR}/src/*.ui)
 set(UI_SRC ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/cceditor/ccnotepad.ui)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/cceditor SRC)
 
-add_executable(${PROJECT_NAME} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
+add_executable(${PROJECT_NAME} ${IS_WIN} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 ${PROJECT_SOURCE_DIR}/src
