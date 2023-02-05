@@ -4,7 +4,7 @@ UNAME := $(shell python3 getos.py)
 ifeq ($(UNAME), linux)
 all:linux
 linux:
-	shell make -f linux.mk package
+	make -f linux.mk package
 else
 all:win
 
