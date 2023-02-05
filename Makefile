@@ -1,4 +1,4 @@
-UNAME := $(shell python getos.py)
+UNAME := $(shell python3 getos.py)
 
 
 ifeq ($(UNAME), linux)
