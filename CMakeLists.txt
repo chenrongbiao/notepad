@@ -7,19 +7,40 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Network PrintSupport XmlPatterns)
 
+# qscint 关键依赖库
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/qscint)
-add_definitions(-D_UNICODE -DUNICODE)
 
-if(${PLUGIN_EN}  STREQUAL on)
-add_definitions(-DNO_PLUGIN=1)
-endif(${PLUGIN_EN})
+# 插件库包含
+# helloworld 动态插件库
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/plugin/helloworld)
+
+# win下需要开启UNICODE进行支持TCHAR
+if(CMAKE_HOST_WIN32)
+    add_definitions(-D_UNICODE -DUNICODE)
+endif()
+
+
+if(${PLUGIN_EN})
+    if(${PLUGIN_EN}  STREQUAL on)
+        add_definitions(-DNO_PLUGIN=1)
+    endif(${PLUGIN_EN})    
+endif()
+
+
 
 file(GLOB UI_SRC ${PROJECT_SOURCE_DIR}/src/*.ui)
 set(UI_SRC ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/cceditor/ccnotepad.ui)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/cceditor SRC)
 
-add_executable(${PROJECT_NAME} ${IS_WIN} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
+
+if(CMAKE_HOST_WIN32)
+# 添加 WIN32 保证主程序启动没有命令行
+    list(APPEND WIN_RCS ${PROJECT_SOURCE_DIR}/src/RealCompareToMinGw.rc)
+    add_executable(${PROJECT_NAME} WIN32 ${WIN_RCS} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
+else()
+    add_executable(${PROJECT_NAME} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
+endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 ${PROJECT_SOURCE_DIR}/src
@@ -63,7 +84,7 @@ if(CMAKE_HOST_UNIX)
 
     # 1. 在顶层构建中导入 Appimage 的构建
     include(cmake/SparkAppimageConfig.cmake)  # 导入来自 Spark 构建的 Appimage 构建
-    add_appimage_icon(assets/spark.png)       # 添加到 Appimage 中的默认的图标
+    add_appimage_icon(src/Resources/txt (5).png)       # 添加到 Appimage 中的默认的图标
     add_appimage_desktop()                    # 添加到 Appimage 中的默认desktop(使用来自 Spark 构建的 Desktop 构建中配置的信息(必须要求 spark-desktop))
     add_appimage()                            # 应用对 Appimage 的构建
 
@@ -71,5 +92,17 @@ if(CMAKE_HOST_UNIX)
     # 注释行(使用方式)
     find_package(DebPackage PATHS ${CMAKE_SOURCE_DIR})
     add_package_descript(cmake/package-deb.descript)
+# elseif(CMAKE_HOST_WIN32)
+#     set(CPACK_GENERATOR NSIS)
+#     set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+#     set(CPACK_PACKAGE_VENDOR "Notepad--")
+#     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Notepad-- 是一个国产跨平台、简单的文本编辑器。")
+#     set(CPACK_PACKAGE_VERSION "1.22.0")
+#     set(CPACK_PACKAGE_VERSION_MAJOR "1")
+#     set(CPACK_PACKAGE_VERSION_MINOR "22")
+#     set(CPACK_PACKAGE_VERSION_PATCH "0")
+#     set(CPACK_PACKAGE_INSTALL_DIRECTORY "CPack Component Example")
+#     SET(CPACK_NSIS_MODIFY_PATH ON)
 
-endif(CMAKE_HOST_UNIX)
+#     INCLUDE(CPack)
+endif()
