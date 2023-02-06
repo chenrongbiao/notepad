@@ -68,14 +68,20 @@ if(CMAKE_HOST_UNIX)
     include(${PROJECT_SOURCE_DIR}/cmake/deb_package_config.cmake) 
     include(CPack)
 elseif(CMAKE_HOST_WIN32)
-    install(s
-        TARGETS ${PROJECT_NAME}
-        DESTINATION "bin"
-    )
+    install(TARGETS ${PROJECT_NAME}
+            DESTINATION "bin")
 
-    install(DIRECTORY  ${PROJECT_SOURCE_DIR}/src/linux/usr
+    install(DIRECTORY  ${PROJECT_SOURCE_DIR}/build/bin
             DESTINATION "/")
+    # 设置软件版本
+    set(CPACK_PACKAGE_NAME "NotePad")
+    set(CPACK_PACKAGE_DESCRIPTION "NotePad--")
+    set(CPACK_PACKAGE_COPYRIGHT "Copyright (c) 2023")
+    set(CPACK_PACKAGE_VERSION "1.22.0")
+    set(CPACK_PACKAGE_VERSION_MAJOR "1")
+    set(CPACK_PACKAGE_VERSION_MINOR "22")
+    set(CPACK_PACKAGE_VERSION_PATCH "0")
 
-    include(${PROJECT_SOURCE_DIR}/cmake/nsin_package_config.cmake) 
+    include(${PROJECT_SOURCE_DIR}/cmake/nsis_package_config.cmake) 
     include(CPack)
 endif()

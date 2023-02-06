@@ -4,9 +4,11 @@ if exist %1 (
 ) else (
     mkdir %1
 )
-copy .\notepad--.exe .\%1
-cd %1
-windeployqt notepad--.exe
+@REM copy .\notepad--.exe .\%1
+@REM cd %1
+windeployqt notepad--.exe --dir=%1
+copy .\src\qscint\libqscint.a .\%1
+copy .\src\plugin\helloworld\libhelloworld.dll .\%1
 
 @REM if exist plugin (
 @REM     @echo "plugin 文件夹已存在"
