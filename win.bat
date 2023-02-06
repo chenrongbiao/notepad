@@ -11,8 +11,6 @@ if exist plugin (
     mkdir plugin
 )
 cd ..
-@REM copy .\notepad--.exe .\%1
-@REM cd %1
 windeployqt notepad--.exe --dir=%1
-copy .\src\qscint\libqscint.a .\%1\plugin
-copy .\src\plugin\*\*.dll .\%1\plugin
+@REM copy .\src\qscint\libqscint.a .\%1\plugin
+@REM copy .\src\plugin\^*\^*.dll .\%1\plugin

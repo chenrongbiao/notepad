@@ -56,6 +56,9 @@ ${PROJECT_SOURCE_DIR}/src/qscint/scintilla/boostregex
 
 target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Network  Qt5::PrintSupport Qt5::XmlPatterns)
 
+# set(PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}/bin")
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
 if(CMAKE_HOST_UNIX)
     install(
         TARGETS ${PROJECT_NAME}
