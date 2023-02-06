@@ -4,20 +4,22 @@
 #define NDD_EXPORTDLL
 
 #if defined(Q_OS_WIN)
-#if defined(NDD_EXPORTDLL)
-#define NDD_EXPORT __declspec(dllexport)
+	#if defined(NDD_EXPORTDLL)
+		#define NDD_EXPORT __declspec(dllexport)
+	#else
+		#define NDD_EXPORT __declspec(dllimport)
+	#endif
 #else
-#define NDD_EXPORT __declspec(dllimport)
-#endif
+	#define NDD_EXPORT __attribute__((visibility("default")))
 #endif
 
 struct ndd_proc_data
 {
-	QString m_strPlugName; //²å¼þÃû³Æ ±ØÑ¡
-	QString m_strFilePath; //lib ²å¼þµÄÈ«¾ÖÂ·¾¶¡£±ØÑ¡
-	QString m_strComment; //²å¼þËµÃ÷
-	QString m_version; //°æ±¾ºÅÂë¡£¿ÉÑ¡
-	QString m_auther;//×÷ÕßÃû³Æ¡£¿ÉÑ¡
+	QString m_strPlugName; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ñ¡
+	QString m_strFilePath; //lib ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡
+	QString m_strComment; //ï¿½ï¿½ï¿½Ëµï¿½ï¿½
+	QString m_version; //ï¿½æ±¾ï¿½ï¿½ï¿½ë¡£ï¿½ï¿½Ñ¡
+	QString m_auther;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½ï¿½ï¿½Ñ¡
 };
 
 
