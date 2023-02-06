@@ -1,4 +1,4 @@
-﻿#include <memory>
+#include <memory>
 #include "ccnotepad.h"
 #include "filemanager.h"
 #include "Encode.h"
@@ -3464,7 +3464,7 @@ void CCNotePad::tabClose(int index, bool isInQuit)
 	{
 		QApplication::beep();
 
-		int ret = QMessageBox::question(this, tr("Save File?"), tr("if save file %1 ?").arg(filePath), tr("Yes"), tr("No"), tr("Cancel"));
+		int ret = QMessageBox::question(this, tr("Do you want to save changes to « %1 » before closing?"), tr("If you don't save the changes you made, you'll lose them forever.").arg(filePath), tr("Yes"), tr("No"), tr("Cancel"));
 	
 		//保存
 		if (ret == 0)
@@ -3614,7 +3614,7 @@ ScintillaEditView* CCNotePad::newTxtFile(QString name, int index, QString conten
 		int ret = FileManager::getInstance().loadFileDataInText(pEdit, contentPath, code, lineEnd, nullptr, false);
 		if (ret != 0)
 		{
-			ui.statusBar->showMessage(tr("Restore Last Temp File %1 Failed").arg(contentPath));
+			ui.statusBar->showMessage(tr("Failed to Restore Last Temporary File %1").arg(contentPath));
 		}
 		isChange = true;
 	}
@@ -8921,4 +8921,3 @@ void CCNotePad::slot_shortcutManager()
 #endif
 	pWin->show();
 }
-
