@@ -31,7 +31,7 @@ release:
 package: release
 	cd build && make package
 	tree build/_CPack_Packages/Linux/DEB/$(PROJECT_NAME)-*
-	dpkg-deb --contents build/$(PACKAGE_NAME)_*$(CALENDAR)*$(SUFFIX).deb
+# 	dpkg-deb --contents build/$(PROJECT_NAME)$(SUFFIX).deb
 
 builddeps:
 	cd build && make builddeps
@@ -39,6 +39,4 @@ builddeps:
 cpus:
 	@echo "CPU数量: $(CPUS)"
 
-copytosource:package
-	cp build/$(PACKAGE_NAME)_*$(CALENDAR)*.deb .
 
