@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.16)
 project(notepad-- VERSION 1.22.0)
 
 set(CMAKE_AUTOMOC ON)
@@ -57,52 +57,25 @@ ${PROJECT_SOURCE_DIR}/src/qscint/scintilla/boostregex
 target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Network  Qt5::PrintSupport Qt5::XmlPatterns)
 
 if(CMAKE_HOST_UNIX)
-    include(cmake/SparkInstallMacrosConfig.cmake)
-    include(cmake/SparkDesktopMacros.cmake)
-    # 内容默认应用名称: Name= 应与项目名称相同
-    spark_desktop_macros(
-        # 应用名称: Name=
-        ${PROJECT_NAME}
-        # 应用名称: Name[zh_CN]=
-        "Notepad--"
-        # 应用说明: Comment=
-        "Notepad-- 是一个国产跨平台、简单的文本编辑器。"
-        # 应用类型: Type=
-        "Application"
-        # 执行程序: Exec=
-        # 有关此 %F 参数可查看: https://gitee.com/zinface/z-tools/blob/desktop-dev/src/DesktopGenerater/desktopexecparamdialog.cpp
-        "notepad-- %F"
-        # 图标路径: Icon=
-        "/usr/share/notepad--/icons/spark.png"
-        # 应用分类: Category=
-        "Development"
+    install(
+        TARGETS ${PROJECT_NAME}
+        DESTINATION "bin"
     )
-    spark_install_file(/usr/share/applications/    ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.desktop)
-    spark_install_file(/usr/share/notepad--/icons/ assets/spark.png)
-    spark_install_target(/usr/bin/ ${PROJECT_NAME})
 
+    install(DIRECTORY  ${PROJECT_SOURCE_DIR}/src/linux/usr
+            DESTINATION "/")
 
-    # 1. 在顶层构建中导入 Appimage 的构建
-    include(cmake/SparkAppimageConfig.cmake)  # 导入来自 Spark 构建的 Appimage 构建
-    add_appimage_icon(src/Resources/txt (5).png)       # 添加到 Appimage 中的默认的图标
-    add_appimage_desktop()                    # 添加到 Appimage 中的默认desktop(使用来自 Spark 构建的 Desktop 构建中配置的信息(必须要求 spark-desktop))
-    add_appimage()                            # 应用对 Appimage 的构建
+    include(${PROJECT_SOURCE_DIR}/cmake/deb_package_config.cmake) 
+    include(CPack)
+elseif(CMAKE_HOST_WIN32)
+    install(s
+        TARGETS ${PROJECT_NAME}
+        DESTINATION "bin"
+    )
 
+    install(DIRECTORY  ${PROJECT_SOURCE_DIR}/src/linux/usr
+            DESTINATION "/")
 
-    # 注释行(使用方式)
-    find_package(DebPackage PATHS ${CMAKE_SOURCE_DIR})
-    add_package_descript(cmake/package-deb.descript)
-# elseif(CMAKE_HOST_WIN32)
-#     set(CPACK_GENERATOR NSIS)
-#     set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-#     set(CPACK_PACKAGE_VENDOR "Notepad--")
-#     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Notepad-- 是一个国产跨平台、简单的文本编辑器。")
-#     set(CPACK_PACKAGE_VERSION "1.22.0")
-#     set(CPACK_PACKAGE_VERSION_MAJOR "1")
-#     set(CPACK_PACKAGE_VERSION_MINOR "22")
-#     set(CPACK_PACKAGE_VERSION_PATCH "0")
-#     set(CPACK_PACKAGE_INSTALL_DIRECTORY "CPack Component Example")
-#     SET(CPACK_NSIS_MODIFY_PATH ON)
-
-#     INCLUDE(CPack)
+    include(${PROJECT_SOURCE_DIR}/cmake/nsin_package_config.cmake) 
+    include(CPack)
 endif()

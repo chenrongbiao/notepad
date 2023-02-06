@@ -21,7 +21,6 @@ VS_VERSION_INFO VERSIONINFO
                 BEGIN
                         BLOCK "080404b0"
                         BEGIN
-                                VALUE "CompanyName", "成都和茂君安网络科技\0"
                                 VALUE "FileDescription", "notepad-- v1.22.0\0"
                                 VALUE "FileVersion", "1.22.0.0\0"
                                 VALUE "LegalCopyright", "Copyright (C) 2020-2023\0"
