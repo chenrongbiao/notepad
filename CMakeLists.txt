@@ -13,6 +13,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/qscint)
 # 插件库包含
 # helloworld 动态插件库
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/plugin/helloworld)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/plugin/nddPluginToys)
 
 # win下需要开启UNICODE进行支持TCHAR
 if(CMAKE_HOST_WIN32)
@@ -32,7 +33,7 @@ file(GLOB UI_SRC ${PROJECT_SOURCE_DIR}/src/*.ui)
 set(UI_SRC ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/cceditor/ccnotepad.ui)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/cceditor SRC)
-
+file(GLOB TS_FILE ${PROJECT_SOURCE_DIR}/src/*.ts)
 
 if(CMAKE_HOST_WIN32)
 # 添加 WIN32 保证主程序启动没有命令行
@@ -53,11 +54,12 @@ ${PROJECT_SOURCE_DIR}/src/qscint/scintilla/include
 ${PROJECT_SOURCE_DIR}/src/qscint/scintilla/lexlib
 ${PROJECT_SOURCE_DIR}/src/qscint/scintilla/boostregex
 )
-
+add_custom_target(ts DEPENDS ${TS_FILE})
 target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Network  Qt5::PrintSupport Qt5::XmlPatterns)
 
 # set(PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}/bin")
 # set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
 
 if(CMAKE_HOST_UNIX)
     install(
@@ -71,6 +73,23 @@ if(CMAKE_HOST_UNIX)
     include(${PROJECT_SOURCE_DIR}/cmake/deb_package_config.cmake) 
     include(CPack)
 elseif(CMAKE_HOST_WIN32)
+add_custom_command(
+    TARGET
+    ${PROJECT_NAME}
+    POST_BUILD
+    # COMMAND
+    # make_directory ${PROJECT_SOURCE_DIR}/build/bin/plugin
+    # COMMAND
+    # cd ${PROJECT_SOURCE_DIR} && copy  build/${PROJECT_NAME}.exe build/bin/
+    COMMAND
+    cd ${PROJECT_SOURCE_DIR}/build && windeployqt --qmldir=${CMAKE_PREFIX_PATH}/qml --dir=bin ${PROJECT_NAME}.exe
+    # COMMAND
+    # cd ${PROJECT_SOURCE_DIR} && copy build/src/*/*/*.dll build/bin/plugin
+    # COMMAND
+    # cd ${PROJECT_SOURCE_DIR} && copy build/src/*/*.a build/bin/plugin
+    VERBATIM
+    )
+
     install(TARGETS ${PROJECT_NAME}
             DESTINATION "/")
 

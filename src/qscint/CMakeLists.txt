@@ -43,12 +43,5 @@ else()
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "qmyedit_qt5d")
 endif()
 
-
-
-# if(NOT DEFINED ${notepad--_BINARY_DIR})
-# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# set(LIBRARY_OUTPUT_PATH ${notepad--_BINARY_DIR}/bin/plugin)
-# set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# endif()
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION "plugin")
