@@ -144,6 +144,6 @@
         <file>resources/img/expand.png</file>
         <file>resources/img/fold.png</file>
         <file>qss/common.qss</file>
-        <file>translations/realcompare_zh.qm</file>
+        <file>translations/notepad--_zh_CN.qm</file>
     </qresource>
 </RCC>

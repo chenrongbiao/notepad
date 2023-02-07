@@ -1839,7 +1839,7 @@ void CCNotePad::syncCurSkinToMenu(int id)
 
 void CCNotePad::slot_changeChinese()
 {
-	if (m_translator->load(":/translations/realcompare_zh.qm"))
+	if (m_translator->load(":/translations/notepad--_zh_CN.qm"))
 	{
 		qApp->installTranslator(m_translator);
 		ui.retranslateUi(this);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(NotePad--)
+project(Notepad--)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)

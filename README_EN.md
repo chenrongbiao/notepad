@@ -57,10 +57,10 @@ yay -S notepad---git
 
 ## Preview
 
-![Input description picture](png/20221107_160824.png)
+![Input description picture](doc/png/20221107_160824.png)
 
-![Input description picture](png/6.png)
+![Input description picture](doc/png/6.png)
 
-![Input description picture](png/3.png)
+![Input description picture](doc/png/3.png)
 
-![Input description picture](png/7.png)
+![Input description picture](doc/png/7.png)
