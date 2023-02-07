@@ -15,11 +15,11 @@
 
 struct ndd_proc_data
 {
-	QString m_strPlugName; //������� ��ѡ
-	QString m_strFilePath; //lib �����ȫ��·������ѡ
-	QString m_strComment; //���˵��
-	QString m_version; //�汾���롣��ѡ
-	QString m_auther;//�������ơ���ѡ
+	QString m_strPlugName; //插件名称 必选
+	QString m_strFilePath; //lib 插件的全局路径。必选
+	QString m_strComment; //插件说明
+	QString m_version; //版本号码。可选
+	QString m_auther;//作者名称。可选
 };
 
 
