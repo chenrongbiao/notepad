@@ -54,7 +54,7 @@ void ColumnEdit::slot_bigChar(bool isCheck)
 	ui.capital->setEnabled(isCheck);
 }
 
-//�Զ�������ǰ���ڵ�״̬
+//自动调整当前窗口的状态
 QWidget* ColumnEdit::autoAdjustCurrentEditWin()
 {
 	QWidget* pw = m_editTabWidget->currentWidget();
@@ -93,7 +93,7 @@ void ColumnEdit::slot_ok()
 	QString prefix = ui.prefix->text();
 	bool isCapital = ui.capital->isChecked();
 
-	//�ǲ����ı�ģʽ
+	//是插入文本模式
 	if (ui.textGroupBox->isChecked())
 	{
 
@@ -138,7 +138,7 @@ void ColumnEdit::slot_ok()
 		}
 		else
 		{
-			//����Ҫ�Ӹ���ʾ
+			//这里要加个提示
 			QApplication::beep();
 			return;
 		}
@@ -209,7 +209,7 @@ void ColumnEdit::slot_ok()
 		lineText.chrg.cpMin = static_cast<Sci_Position>(lineBegin);
 		lineText.chrg.cpMax = static_cast<Sci_Position>(lineEnd);
 		lineText.lpstrText = lineData.data();
-		//��ȡԭʼ�е�����
+		//获取原始行的内容
 		pEdit->SendScintilla(SCI_GETTEXTRANGE, 0, &lineText);
 
 		if (lineEndCol < cursorCol)
