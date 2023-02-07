@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(notepad-- VERSION 1.22.0)
+project(NotePad-- VERSION 1.22.0)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -57,7 +57,7 @@ ${PROJECT_SOURCE_DIR}/src/qscint/scintilla/boostregex
 target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Network  Qt5::PrintSupport Qt5::XmlPatterns)
 
 # set(PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}/bin")
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+# set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 if(CMAKE_HOST_UNIX)
     install(
@@ -72,12 +72,12 @@ if(CMAKE_HOST_UNIX)
     include(CPack)
 elseif(CMAKE_HOST_WIN32)
     install(TARGETS ${PROJECT_NAME}
-            DESTINATION "bin")
+            DESTINATION "/")
 
-    install(DIRECTORY  ${PROJECT_SOURCE_DIR}/build/bin
+    install(DIRECTORY  ${PROJECT_SOURCE_DIR}/build/bin/
             DESTINATION "/")
     # 设置软件版本
-    set(CPACK_PACKAGE_NAME "NotePad")
+    set(CPACK_PACKAGE_NAME "NotePad--")
     set(CPACK_PACKAGE_DESCRIPTION "NotePad--")
     set(CPACK_PACKAGE_COPYRIGHT "Copyright (c) 2023")
     set(CPACK_PACKAGE_VERSION "1.22.0")

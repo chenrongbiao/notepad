@@ -1,6 +1,6 @@
 #include <windows.h>
 
-IDI_ICON1	ICON	DISCARDABLE	"D:\\Qt\\CodeWorkspace\\notepad--\\src\\Resources\\edit\\global\\ndd.ico"
+IDI_ICON1	ICON	DISCARDABLE	".\\Resources\\edit\\global\\ndd.ico"
 
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 
