@@ -10,7 +10,7 @@ class MediatorFileTree;
 
 class RcTreeWidget :public QTreeWidget
 {
-	
+	Q_OBJECT
 public:
 	RcTreeWidget(QWidget *parent=nullptr);
 	~RcTreeWidget();
