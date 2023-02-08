@@ -34,5 +34,17 @@ ${PROJECT_SOURCE_DIR}/../../qscint/scintilla/boostregex
 
 target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Network  Qt5::PrintSupport Qt5::XmlPatterns)
 
-install(TARGETS ${PROJECT_NAME}
-    DESTINATION "plugin")
+if(CMAKE_HOST_UNIX)
+    if(NOT DEFINED LINUX_INSTALL_PATH)
+        set(PROJECT_LINUX_INSTALL_PATH "plugin/${PROJECT_NAME}")
+    else()
+        set(PROJECT_LINUX_INSTALL_PATH "${LINUX_INSTALL_PATH}/${PROJECT_NAME}")
+    endif(LINUX_INSTALL_PATH)
+    
+    install(TARGETS ${PROJECT_NAME}
+        DESTINATION ${PROJECT_LINUX_INSTALL_PATH})
+
+elseif(CMAKE_HOST_WIN32)
+    install(TARGETS ${PROJECT_NAME}
+        DESTINATION "plugin")
+endif()

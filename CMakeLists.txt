@@ -70,9 +70,10 @@ target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5
 
 
 if(CMAKE_HOST_UNIX)
+    set(LINUX_INSTALL_PATH "usr/share/${PROJECT_NAME}")
     install(
         TARGETS ${PROJECT_NAME}
-        DESTINATION "bin"
+        DESTINATION ${LINUX_INSTALL_PATH}
     )
 
     install(DIRECTORY  ${PROJECT_SOURCE_DIR}/src/linux/usr
@@ -80,6 +81,7 @@ if(CMAKE_HOST_UNIX)
 
     include(${PROJECT_SOURCE_DIR}/cmake/deb_package_config.cmake) 
     include(CPack)
+    
 elseif(CMAKE_HOST_WIN32)
 add_custom_command(
     TARGET
