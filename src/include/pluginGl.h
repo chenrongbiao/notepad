@@ -15,11 +15,11 @@
 
 struct ndd_proc_data
 {
-	QString m_strPlugName; //²å¼şÃû³Æ ±ØÑ¡
-	QString m_strFilePath; //lib ²å¼şµÄÈ«¾ÖÂ·¾¶¡£±ØÑ¡
-	QString m_strComment; //²å¼şËµÃ÷
-	QString m_version; //°æ±¾ºÅÂë¡£¿ÉÑ¡
-	QString m_auther;//×÷ÕßÃû³Æ¡£¿ÉÑ¡
+	QString m_strPlugName; //æ’ä»¶åç§° å¿…é€‰
+	QString m_strFilePath; //lib æ’ä»¶çš„å…¨å±€è·¯å¾„ã€‚å¿…é€‰
+	QString m_strComment; //æ’ä»¶è¯´æ˜
+	QString m_version; //ç‰ˆæœ¬å·ç ã€‚å¯é€‰
+	QString m_auther;//ä½œè€…åç§°ã€‚å¯é€‰
 };
 
 

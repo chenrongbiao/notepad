@@ -5,7 +5,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Network PrintSupport XmlPatterns)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent Network LinguistTools PrintSupport XmlPatterns)
 
 # qscint 关键依赖库
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/qscint)
@@ -13,6 +13,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/qscint)
 # 插件库包含
 # helloworld 动态插件库
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/plugin/helloworld)
+# add_subdirectory(${PROJECT_SOURCE_DIR}/src/plugin/nddPluginToys)
 
 # win下需要开启UNICODE进行支持TCHAR
 if(CMAKE_HOST_WIN32)
@@ -33,14 +34,22 @@ set(UI_SRC ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/cceditor/ccnotepad.ui)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/cceditor SRC)
 
+set(TS_FILES ${PROJECT_SOURCE_DIR}/src/realcompare_zh.ts)
 
 if(CMAKE_HOST_WIN32)
 # 添加 WIN32 保证主程序启动没有命令行
     list(APPEND WIN_RCS ${PROJECT_SOURCE_DIR}/src/RealCompareToMinGw.rc)
-    add_executable(${PROJECT_NAME} WIN32 ${WIN_RCS} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
+    add_executable(${PROJECT_NAME} WIN32 ${WIN_RCS} ${TS_FILES} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
 else()
-    add_executable(${PROJECT_NAME} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
+    add_executable(${PROJECT_NAME} ${SRC} ${UI_SRC} ${TS_FILES} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
 endif()
+
+
+
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR}/src ${TS_FILES})
+# add_custom_target(lupdate_task DEPENDS ${TS_FILES})
+# add_custom_target(lrelease_task DEPENDS ${QM_FILES})
+
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 ${PROJECT_SOURCE_DIR}/src
@@ -59,6 +68,7 @@ target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5
 # set(PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}/bin")
 # set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
+
 if(CMAKE_HOST_UNIX)
     install(
         TARGETS ${PROJECT_NAME}
@@ -71,6 +81,25 @@ if(CMAKE_HOST_UNIX)
     include(${PROJECT_SOURCE_DIR}/cmake/deb_package_config.cmake) 
     include(CPack)
 elseif(CMAKE_HOST_WIN32)
+add_custom_command(
+    TARGET
+    ${PROJECT_NAME}
+    POST_BUILD
+    # COMMAND
+    # make_directory ${PROJECT_SOURCE_DIR}/build/bin/plugin
+    # COMMAND
+    # cd ${PROJECT_SOURCE_DIR} && copy  build/${PROJECT_NAME}.exe build/bin/
+    COMMAND
+    cd ${PROJECT_SOURCE_DIR}/build && ${CMAKE_PREFIX_PATH}/bin/windeployqt.exe --list "source" --force --qmldir "${CMAKE_PREFIX_PATH}/qml" --dir=bin ${PROJECT_NAME}.exe
+    # COMMAND
+    # cd ${PROJECT_SOURCE_DIR} && copy build/src/*/*/*.dll build/bin/plugin
+    # COMMAND
+    # cd ${PROJECT_SOURCE_DIR} && copy build/src/*/*.a build/bin/plugin
+    COMMENT
+    "${CMAKE_PREFIX_PATH}/qml"
+    VERBATIM
+    )
+
     install(TARGETS ${PROJECT_NAME}
             DESTINATION "/")
 
