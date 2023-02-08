@@ -1,4 +1,4 @@
-set(CPACK_GENERATOR NSIS)
+set(CPACK_GENERATOR "NSIS;ZIP")
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME}")
 # 维护人员
@@ -38,22 +38,46 @@ set (CPACK_NSIS_DEFINES "
 
 # 设置 安装时需要的环境变量 
 set (CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-        WriteRegStr SHCTX \\\"Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths\\\\${PROJECT_NAME}\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe\\\"
+        ExecShell \\\"startpin\\\" \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\"
+        ExecShell \\\"taskbarpin\\\" \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\"
+        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"
+        CreateShortCut \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"
+        WriteRegStr SHCTX \\\"Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths\\\\${PROJECT_NAME}\\\" \\\"\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"
         WriteRegStr SHCTX \\\"Software\\\\Classes\\\\${PROJECT_NAME}\\\\shell\\\" \\\"\\\" \\\"open\\\"
-        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\${PROJECT_NAME}\\\\shell\\\\open\\\\command\\\" \\\"\\\" \\\"$\\\\\\\"$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe$\\\\\\\" $\\\\\\\"%1$\\\\\\\"\\\"
+        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\${PROJECT_NAME}\\\\shell\\\\open\\\\command\\\" \\\"\\\" \\\"$\\\\\\\"$INSTDIR\\\\${PROJECT_NAME}.exe$\\\\\\\" $\\\\\\\"%1$\\\\\\\"\\\"
         WriteRegStr SHCTX \\\"Software\\\\Classes\\\\.txt\\\\OpenWithProgids\\\" \\\"${PROJECT_NAME}\\\" \\\"\\\"
+        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\.ini\\\\OpenWithProgids\\\" \\\"${PROJECT_NAME}\\\" \\\"\\\"
+        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\.log\\\\OpenWithProgids\\\" \\\"${PROJECT_NAME}\\\" \\\"\\\"
         WriteRegStr SHCTX \\\"Software\\\\Classes\\\\*\\\\shell\\\\${PROJECT_NAME}\\\" \\\"\\\" \\\"Edit with ${PROJECT_NAME}\\\"
-        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\*\\\\shell\\\\${PROJECT_NAME}\\\" \\\"Icon\\\" \\\"$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe\\\"
-        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\*\\\\shell\\\\${PROJECT_NAME}\\\\command\\\" \\\"\\\" \\\"$\\\\\\\"$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe$\\\\\\\" $\\\\\\\"%1$\\\\\\\"\\\"
-     ")
+        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\*\\\\shell\\\\${PROJECT_NAME}\\\" \\\"Icon\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"
+        WriteRegStr SHCTX \\\"Software\\\\Classes\\\\*\\\\shell\\\\${PROJECT_NAME}\\\\command\\\" \\\"\\\" \\\"$\\\\\\\"$INSTDIR\\\\${PROJECT_NAME}.exe$\\\\\\\" $\\\\\\\"%1$\\\\\\\"\\\"
+        WriteRegStr HKCR \\\"*\\\\shell\\\\${PROJECT_NAME}\\\" \\\"Icon\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"
+        WriteRegStr HKCR \\\"*\\\\shell\\\\${PROJECT_NAME}\\\\command\\\" \\\"\\\" \\\"$\\\\\\\"$INSTDIR\\\\${PROJECT_NAME}.exe$\\\\\\\" $\\\\\\\"%1$\\\\\\\"\\\"
+
+        WriteRegStr HKCR \\\".txt\\\" \\\"\\\" \\\"ndd.File\\\"
+        WriteRegStr HKCR \\\".ini\\\" \\\"\\\" \\\"ndd.File\\\"
+        WriteRegStr HKCR \\\".log\\\" \\\"\\\" \\\"ndd.File\\\"
+        WriteRegStr HKCR \\\".sh\\\" \\\"\\\" \\\"ndd.File\\\"
+        WriteRegStr HKCR \\\"ndd.File\\\" \\\"\\\" \\\"\\\"
+        WriteRegStr HKCR \\\"ndd.File\\\\shell\\\" \\\"\\\" \\\"\\\"
+        WriteRegStr HKCR \\\"ndd.File\\\\shell\\\\open\\\" \\\"\\\" \\\"\\\"
+        WriteRegStr HKCR \\\"ndd.File\\\\shell\\\\open\\\\command\\\" \\\"\\\" \\\"$\\\\\\\"$INSTDIR\\\\${PROJECT_NAME}.exe$\\\\\\\" $\\\\\\\"%1$\\\\\\\"\\\"
+        ")
 
 # 设置 卸载时需要的环境变量 
 set (CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+        ExecShell \\\"startunpin\\\" \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\"
+        ExecShell \\\"taskbarunpin\\\" \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\"
         Delete \\\"$DESKTOP\\\\${PROJECT_NAME}.lnk\\\"
         Delete \\\"$SMPROGRAMS\\\\${PROJECT_NAME}.lnk\\\"
         DeleteRegKey SHCTX \\\"Software\\\\Classes\\\\*\\\\shell\\\\${PROJECT_NAME}\\\"
-        DeleteRegKey SHCTX \\\"Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths\\\\bin\\\\${PROJECT_NAME}.exe\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe\\\"
+        DeleteRegKey SHCTX \\\"Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\App Paths\\\\${PROJECT_NAME}.exe\\\" \\\"\\\" \\\"$INSTDIR\\\\${PROJECT_NAME}.exe\\\"
         DeleteRegKey SHCTX \\\"Software\\\\${PROJECT_NAME}\\\"
         DeleteRegValue SHCTX \\\"Software\\\\Classes\\\\.txt\\\\OpenWithProgids\\\" \\\"${PROJECT_NAME}\\\"
+        DeleteRegValue SHCTX \\\"Software\\\\Classes\\\\.ini\\\\OpenWithProgids\\\" \\\"${PROJECT_NAME}\\\"
+        DeleteRegValue SHCTX \\\"Software\\\\Classes\\\\.log\\\\OpenWithProgids\\\" \\\"${PROJECT_NAME}\\\"
         DeleteRegKey SHCTX \\\"Software\\\\Classes\\\\${PROJECT_NAME}\\\"
+        DeleteRegValue HKCR \\\"*\\\\shell\\\\${PROJECT_NAME}\\\" \\\"Icon\\\"
+        DeleteRegKey HKCR \\\"*\\\\shell\\\\${PROJECT_NAME}\\\"
+
      ")

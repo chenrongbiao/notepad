@@ -12,9 +12,10 @@ add_definitions(-D_UNICODE -DUNICODE)
 
 
 
-file(GLOB UI_SRC ${PROJECT_SOURCE_DIR}/*.ui)
-file(GLOB SRC ${PROJECT_SOURCE_DIR}/*.cpp)
-file(GLOB MOC_HEADER ${PROJECT_SOURCE_DIR}/*.h)
+file(GLOB_RECURSE UI_SRC ${PROJECT_SOURCE_DIR}/*.ui)
+file(GLOB_RECURSE SRC ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE MOC_HEADER ${PROJECT_SOURCE_DIR}/*.h)
+message(${SRC} ${UI_SRC} ${MOC_HEADER})
 # add_executable(${PROJECT_NAME} ${IS_WIN} ${SRC} ${UI_SRC} ${PROJECT_SOURCE_DIR}/src/RealCompare.qrc)
 
 add_library(${PROJECT_NAME} SHARED ${SRC} ${UI_SRC} ${MOC_HEADER})
@@ -33,10 +34,5 @@ ${PROJECT_SOURCE_DIR}/../../qscint/scintilla/boostregex
 
 target_link_libraries(${PROJECT_NAME} qscint Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Network  Qt5::PrintSupport Qt5::XmlPatterns)
 
-# if(NOT DEFINED ${notepad--_BINARY_DIR})
-# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# set(LIBRARY_OUTPUT_PATH ${notepad--_BINARY_DIR}/bin/plugin)
-# set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${notepad--_BINARY_DIR}/bin/plugin)
-# endif()
+install(TARGETS ${PROJECT_NAME}
+    DESTINATION "plugin")

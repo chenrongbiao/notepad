@@ -15,3 +15,6 @@ msvc:
 mingw:
 	make -f win.mk mingw
 endif
+
+clean:
+	rm -rf build
