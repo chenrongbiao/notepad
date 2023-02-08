@@ -54,7 +54,7 @@ void ColumnEdit::slot_bigChar(bool isCheck)
 	ui.capital->setEnabled(isCheck);
 }
 
-//è‡ªåŠ¨è°ƒæ•´å½“å‰çª—å£çš„çŠ¶æ€
+//×Ô¶¯µ÷Õûµ±Ç°´°¿ÚµÄ×´Ì¬
 QWidget* ColumnEdit::autoAdjustCurrentEditWin()
 {
 	QWidget* pw = m_editTabWidget->currentWidget();
@@ -93,7 +93,7 @@ void ColumnEdit::slot_ok()
 	QString prefix = ui.prefix->text();
 	bool isCapital = ui.capital->isChecked();
 
-	//æ˜¯æ’å…¥æ–‡æœ¬æ¨¡å¼
+	//ÊÇ²åÈëÎÄ±¾Ä£Ê½
 	if (ui.textGroupBox->isChecked())
 	{
 
@@ -138,7 +138,7 @@ void ColumnEdit::slot_ok()
 		}
 		else
 		{
-			//è¿™é‡Œè¦åŠ ä¸ªæç¤º
+			//ÕâÀïÒª¼Ó¸öÌáÊ¾
 			QApplication::beep();
 			return;
 		}
@@ -209,7 +209,7 @@ void ColumnEdit::slot_ok()
 		lineText.chrg.cpMin = static_cast<Sci_Position>(lineBegin);
 		lineText.chrg.cpMax = static_cast<Sci_Position>(lineEnd);
 		lineText.lpstrText = lineData.data();
-		//è·å–åŸå§‹è¡Œçš„å†…å®¹
+		//»ñÈ¡Ô­Ê¼ĞĞµÄÄÚÈİ
 		pEdit->SendScintilla(SCI_GETTEXTRANGE, 0, &lineText);
 
 		if (lineEndCol < cursorCol)
