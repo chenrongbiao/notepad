@@ -1,0 +1,3 @@
+[submodule "src/plugin/MD5Calc"]
+	path = src/plugin/MD5Calc
+	url = https://github.com/Joker2770/MD5Calc.git
