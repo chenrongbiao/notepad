@@ -1,9 +1,10 @@
 #include "draglineedit.h"
+#include <QFile>
 
 DragLineEdit::DragLineEdit(QWidget *parent)
-	: QLineEdit(parent)
+    : QLineEdit(parent)
 {
-	setAcceptDrops(true);
+    setAcceptDrops(true);
 }
 
 DragLineEdit::~DragLineEdit()
@@ -12,14 +13,14 @@ DragLineEdit::~DragLineEdit()
 
 void DragLineEdit::dragEnterEvent(QDragEnterEvent* event)
 {
-	if (event->mimeData()->hasFormat("text/uri-list")) //只能打开文本文件
-	{
-		event->accept(); //可以在这个窗口部件上拖放对象
-	}
-	else
-	{
-		event->ignore();
-	}
+    if (event->mimeData()->hasFormat("text/uri-list")) //鍙兘鎵撳紑鏂囨湰鏂囦欢
+    {
+        event->accept(); //鍙互鍦ㄨ繖涓獥鍙ｉ儴浠朵笂鎷栨斁瀵硅薄
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void DragLineEdit::dragMoveEvent(QDragMoveEvent* )
@@ -28,25 +29,25 @@ void DragLineEdit::dragMoveEvent(QDragMoveEvent* )
 
 void DragLineEdit::dropEvent(QDropEvent* e)
 {
-	QList<QUrl> urls = e->mimeData()->urls();
-	if (urls.isEmpty())
-		return;
+    QList<QUrl> urls = e->mimeData()->urls();
+    if (urls.isEmpty())
+        return;
 
-	QString fileName = urls.first().toLocalFile();
+    QString fileName = urls.first().toLocalFile();
 
-	if (fileName.isEmpty())
-	{
-		return;
-	}
+    if (fileName.isEmpty())
+    {
+        return;
+    }
 
-	if (!QFile::exists(fileName))
-	{
-		return;
-	}
+    if (!QFile::exists(fileName))
+    {
+        return;
+    }
 
-	this->setText(fileName);
+    this->setText(fileName);
 
-	e->accept();
+    e->accept();
 
-	emit this->returnPressed();
+    emit this->returnPressed();
 }
