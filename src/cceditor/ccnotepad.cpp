@@ -7515,10 +7515,23 @@ bool CCNotePad::eventFilter(QObject * watched, QEvent * event)
 {
 	if (watched == ui.editTabWidget && event->type() == QEvent::MouseButtonDblClick)
 	{
-		slot_actionNewFile_toggle(true);
-		m_saveFile->setEnabled(false);
-		return true; // 注意这里一定要返回true，表示你要过滤该事件原本的实现
+		auto e = dynamic_cast<QMouseEvent*>(event);
+
+		QRect tabBarRect = ui.editTabWidget->tabBar()->contentsRect();
+
+		QRect rect;
+		rect.setX(tabBarRect.width());
+		rect.setY(tabBarRect.x());
+		rect.setWidth(width() - tabBarRect.width() - 1);
+		rect.setHeight(tabBarRect.height());
+
+		if (rect.contains((e->pos()))) {
+			slot_actionNewFile_toggle(true);
+			m_saveFile->setEnabled(false);
+			return true; // 注意这里一定要返回true，表示你要过滤该事件原本的实现
+		}
 	}
+	
 	return false;
 }
 
