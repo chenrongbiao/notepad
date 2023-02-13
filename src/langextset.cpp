@@ -7,10 +7,11 @@
 #include <QHeaderView>
 #include <QSettings>
 #include <QMessageBox>
+#include <QFile>
 
 int ITEM_CHANGED = Qt::UserRole; 
-int ITEM_LEX_ID = Qt::UserRole + 1; //¶ÔÓ¦µÄÓï·¨lexerµÄ ID
-int ITEM_LEX_EXT_OLD_VALUE = Qt::UserRole + 2; //¶ÔÓ¦µÄÓï·¨¹ØÁªEXTÎÄ¼şµÄ¾ÉÖµ
+int ITEM_LEX_ID = Qt::UserRole + 1; //å¯¹åº”çš„è¯­æ³•lexerçš„ ID
+int ITEM_LEX_EXT_OLD_VALUE = Qt::UserRole + 2; //å¯¹åº”çš„è¯­æ³•å…³è”EXTæ–‡ä»¶çš„æ—§å€¼
 
 LangExtSet::LangExtSet(QWidget *parent)
 	: QMainWindow(parent), m_isChanged(false)
@@ -62,7 +63,7 @@ void LangExtSet::initLangName()
 			QTableWidgetItem* item1 = new QTableWidgetItem(extList.join(','));
 			item1->setData(ITEM_CHANGED, QVariant(false)); 
 
-			//°Ñ¾ÉÖµ¼ÇÆğÀ´£¬ºóÃæĞŞ¸Äºó¶Ô±ÈÊµÊ±ĞŞ¸ÄÄÚ´æÖĞµÄ¸Ä¶¯
+			//æŠŠæ—§å€¼è®°èµ·æ¥ï¼Œåé¢ä¿®æ”¹åå¯¹æ¯”å®æ—¶ä¿®æ”¹å†…å­˜ä¸­çš„æ”¹åŠ¨
 			item1->setData(ITEM_LEX_EXT_OLD_VALUE, QVariant(extList));
 			
 			ui.langTableWidget->setItem(langId, 1, item1);
@@ -112,8 +113,10 @@ void LangExtSet::slot_save()
 	int rowNums = ui.langTableWidget->rowCount();
 
 	QString userLangFile = QString("notepad/tag_ext");
-	QSettings qs(QSettings::IniFormat, QSettings::UserScope, userLangFile);
-	qs.setIniCodec("UTF-8");
+    QSettings qs(QSettings::IniFormat, QSettings::UserScope, userLangFile);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    qs->setIniCodec("UTF-8");
+#endif
 
 	for (int i = 0; i < rowNums; ++i)
 	{
@@ -141,12 +144,12 @@ void LangExtSet::slot_save()
 				QString langLexerTag = QString("%1_lexId").arg(langTag);
 				qs.setValue(langLexerTag, lexId);
 
-				//ÉÏÃæÊÇ¸üĞÂÎÄ¼ş£¬ÏÂÃæÊÇ¸üĞÂÄÚ´æ£¬ÈÃÊµÊ±ÉúĞ§
+				//ä¸Šé¢æ˜¯æ›´æ–°æ–‡ä»¶ï¼Œä¸‹é¢æ˜¯æ›´æ–°å†…å­˜ï¼Œè®©å®æ—¶ç”Ÿæ•ˆ
 				QStringList oldExtList = item->data(ITEM_LEX_EXT_OLD_VALUE).toStringList();
 
 				updataExtLexerManager(langTag, lexId, oldExtList, extList);
 
-				//¸üĞÂĞÂÖµ¡£ÒòÎª¿ÉÄÜ²»¹Ø±ÕÊ±ÔÙ´ÎĞŞ¸Ä
+				//æ›´æ–°æ–°å€¼ã€‚å› ä¸ºå¯èƒ½ä¸å…³é—­æ—¶å†æ¬¡ä¿®æ”¹
 				item->setData(ITEM_LEX_EXT_OLD_VALUE, QVariant(extList));
 			}
 		}
@@ -156,15 +159,15 @@ void LangExtSet::slot_save()
 	ui.statusBar->showMessage(tr("Save Finished !"), 10000);
 }
 
-//¸üĞÂExtLexerManagerÖĞtag¹ØÁªµÄÖµ
+//æ›´æ–°ExtLexerManagerä¸­tagå…³è”çš„å€¼
 void LangExtSet::updataExtLexerManager(QString tag, int lexId, QStringList & oldExtList, QStringList & newExtList)
 {
-	//°Ñ¾ÉµÄÖ±½ÓÉ¾³ı
+	//æŠŠæ—§çš„ç›´æ¥åˆ é™¤
 	for (int i = 0; i < oldExtList.size(); ++i)
 	{
 		ExtLexerManager::getInstance()->remove(oldExtList.at(i));
 	}
-	//°ÑĞÂµÄÖØĞÂ¼ÓÈëÒ»±é
+	//æŠŠæ–°çš„é‡æ–°åŠ å…¥ä¸€é
 	for (int i = 0; i < newExtList.size(); ++i)
 	{
 		FileExtLexer v;
@@ -175,12 +178,14 @@ void LangExtSet::updataExtLexerManager(QString tag, int lexId, QStringList & old
 	}
 }
 
-//¼ÓÔØÎÄ¼şµÄ¹ØÁªºó×ºµ½Óï·¨ÖĞ
+//åŠ è½½æ–‡ä»¶çš„å…³è”åç¼€åˆ°è¯­æ³•ä¸­
 void LangExtSet::loadExtRelevanceToMagr()
 {
-	QString userLangFile = QString("notepad/tag_ext");//×Ô¶¨ÒåÓïÑÔÖĞ²»ÄÜÓĞ.×Ö·û£¬·ñÔò¿ÉÄÜÓĞ´í£¬ºóĞøÒª¼ì²é
+	QString userLangFile = QString("notepad/tag_ext");//è‡ªå®šä¹‰è¯­è¨€ä¸­ä¸èƒ½æœ‰.å­—ç¬¦ï¼Œå¦åˆ™å¯èƒ½æœ‰é”™ï¼Œåç»­è¦æ£€æŸ¥
 	QSettings qs(QSettings::IniFormat, QSettings::UserScope, userLangFile);
-	qs.setIniCodec("UTF-8");
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    qs->setIniCodec("UTF-8");
+#endif
 
 	if (!QFile::exists(qs.fileName()))
 	{
