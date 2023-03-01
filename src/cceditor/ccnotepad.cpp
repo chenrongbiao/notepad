@@ -2048,6 +2048,12 @@ void CCNotePad::syncCurSkinToMenu(int id)
 	s_curStyleId = id;
 }
 
+void CCNotePad::UpdateUndoRedoStatus(bool canUndo, bool canRedo)
+{
+	m_undo->setEnabled(canUndo);
+	m_redo->setEnabled(canRedo);
+}
+
 void CCNotePad::slot_changeChinese()
 {
 	if (m_translator->load(":/realcompare_zh.qm"))

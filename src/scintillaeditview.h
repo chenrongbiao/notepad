@@ -267,6 +267,8 @@ protected:
 public slots:
 	void updateLineNumberWidth(int lineNumberMarginDynamicWidth=0);
 	void slot_linePosChanged(int line, int pos);
+	//更新工具栏撤销重做按钮栈顶栈底状态
+	void UpdateUndoRedoStatus(bool canUndo = true, bool canRedo = true);
 
 private:
 	void updateLineNumbersMargin(bool forcedToHide);

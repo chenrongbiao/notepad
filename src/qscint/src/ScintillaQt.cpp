@@ -195,6 +195,18 @@ sptr_t QsciScintillaQt::WndProc(unsigned int iMessage, uptr_t wParam,
 }
 
 
+void QsciScintillaQt::UpdateUndoRedoStatus()
+{
+    bool canUndo, canRedo;
+
+    if (qsb != nullptr) {
+        canUndo = pdoc->CanUndo();
+        canRedo = pdoc->CanRedo();
+        emit qsb->SCN_UNDOREDOSTATUS(canUndo, canRedo);
+    }
+}
+
+
 // Windows nonsense.
 sptr_t QsciScintillaQt::DefWndProc(unsigned int, uptr_t, sptr_t)
 {
@@ -492,6 +504,12 @@ void QsciScintillaQt::NotifyParent(SCNotification scn)
 
     default:
         qWarning("Unknown notification: %u", scn.nmhdr.code);
+    }
+    if (scn.nmhdr.code == SCN_SAVEPOINTLEFT || scn.nmhdr.code == SCN_SAVEPOINTREACHED ||
+        scn.nmhdr.code == SCN_MODIFIED || scn.nmhdr.code == SCN_FOCUSIN ||
+        scn.nmhdr.code == SCN_FOCUSOUT) 
+    {
+        UpdateUndoRedoStatus();
     }
 }
 

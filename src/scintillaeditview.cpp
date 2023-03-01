@@ -1125,6 +1125,10 @@ void ScintillaEditView::init()
 	//开启后可以保证长行在滚动条下完整显示
 	execute(SCI_SETSCROLLWIDTHTRACKING, true);
 
+	//更新撤消重做工具栏按钮
+	connect(this, SIGNAL(SCN_UNDOREDOSTATUS(bool, bool)),
+		SLOT(UpdateUndoRedoStatus(bool,bool)));
+
 }
 
 //大文本不能显示行号，其实显示的是每一行的地址。
@@ -3644,6 +3648,11 @@ void ScintillaEditView::addHotSpot()
 			assert(startWide == wideTextLen);
 		}
 	}
+}
+
+void ScintillaEditView::UpdateUndoRedoStatus(bool canUndo, bool canRedo)
+{
+	m_NoteWin->UpdateUndoRedoStatus(canUndo, canRedo);
 }
 
 void ScintillaEditView::setStyleOptions()
