@@ -87,6 +87,7 @@ enum NddDocType {
 //打开模式。1 文本 2 二进制 3 大文本只读 4 文本只读
 //const char* Open_Attr = "openid";
 class FileListView;
+class QtLangSet;
 
 class CCNotePad : public QMainWindow
 {
@@ -129,6 +130,8 @@ public:
 	void syncCurSkinToMenu(int id);
 
 	int restoreLastFiles();
+
+	void UpdateUndoRedoStatus(bool canUndo = true, bool canRedo = true);
 
 	ScintillaEditView * getCurEditView();
 	void getCurUseLexerTags(QVector<QString>& tag);

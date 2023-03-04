@@ -109,7 +109,7 @@ public:
 protected:
     void timerEvent(QTimerEvent *e);
 
-
+	void UpdateUndoRedoStatus();
 
 private slots:
     void onIdle();

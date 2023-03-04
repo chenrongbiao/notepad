@@ -3769,6 +3769,9 @@ signals:
     //!
     void SCN_ZOOM();
 
+    //!
+    void SCN_UNDOREDOSTATUS(bool undo, bool redo);
+
 protected:
     //! Returns true if the contents of a MIME data object can be decoded and
     //! inserted into the document.  It is called during drag and paste
