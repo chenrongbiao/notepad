@@ -4945,6 +4945,7 @@ bool CCNotePad::openHexFile(QString filePath)
 	
 	ui.editTabWidget->setCurrentIndex(curIndex);
 	connect(ui.editTabWidget, &QTabWidget::currentChanged, this, &CCNotePad::slot_tabCurrentChanged, Qt::UniqueConnection);
+	connect(pEdit, &ScintillaHexEditView::copyAvailable, this, &CCNotePad::slot_copyAvailable);
 
 	QVariant editViewFilePath(filePath);
 	pEdit->setProperty(Edit_View_FilePath, editViewFilePath);
@@ -6302,7 +6303,7 @@ void CCNotePad::slot_cut()
 void CCNotePad::slot_copy()
 {
 	QWidget* pw = ui.editTabWidget->currentWidget();
-	ScintillaEditView* pEdit = dynamic_cast<ScintillaEditView*>(pw);
+	QsciScintilla* pEdit = dynamic_cast<QsciScintilla*>(pw);
 
 	if (pEdit != nullptr)
 	{
