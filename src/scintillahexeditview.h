@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <vector>
+
 #include <qsciscintilla.h>
 #include <Scintilla.h>
 #include <Platform.h>
@@ -24,8 +26,16 @@ public:
 
 	void updateThemes();
 
+	virtual void setText(const QString& text);
+
+public slots:
+
+	virtual void copy();
+	virtual void selectAll(bool select = true);
+
 private:
 	void init();
+	void selectAdditional();
 
 private slots:
 	void slot_scrollYValueChange(int value);
@@ -33,6 +43,9 @@ private slots:
 protected:
 	void dragEnterEvent(QDragEnterEvent * event);
 	void dropEvent(QDropEvent * e);
+
+	//! Re-implemented to tell Scintilla it has the focus.
+	virtual void focusInEvent(QFocusEvent* e);
 
 	//! Re-implemented to handle mouse moves.
 	virtual void mouseMoveEvent(QMouseEvent* e);
@@ -55,4 +68,13 @@ private:
 
 	Scintilla::Point m_SelFrom;
 	Scintilla::Point m_SelTo;
+
+	long m_PosFrom = 0;
+	long m_PosLast = 0;
+	long m_PosTo = 0;
+
+	std::vector<char> m_PosSelect;
+
+	long m_CopyFrom = 0;
+	long m_CopyTo = 0;
 };
