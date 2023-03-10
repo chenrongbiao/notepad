@@ -6,7 +6,7 @@ ShortcutKeyEditWin::ShortcutKeyEditWin(QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
-	ui.keySequenceEdit->setFocus();
+    ui.keySequenceEdit->setFocus();
 }
 
 ShortcutKeyEditWin::~ShortcutKeyEditWin()
