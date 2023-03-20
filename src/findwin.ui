@@ -46,7 +46,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_find">
        <attribute name="title">
@@ -1316,13 +1316,6 @@
  <tabstops>
   <tabstop>findinfilesTab</tabstop>
   <tabstop>findComboBox</tabstop>
-  <tabstop>findTextNext</tabstop>
-  <tabstop>findTextPrev</tabstop>
-  <tabstop>countBt</tabstop>
-  <tabstop>findAllinCourrent</tabstop>
-  <tabstop>findAllinAllOpen</tabstop>
-  <tabstop>findClearBt</tabstop>
-  <tabstop>findCloseBt</tabstop>
   <tabstop>findBackwardBox</tabstop>
   <tabstop>findMatchWholeBox</tabstop>
   <tabstop>findMatchCaseBox</tabstop>
@@ -1330,13 +1323,16 @@
   <tabstop>findModeNormalBt</tabstop>
   <tabstop>findModeExtendBt</tabstop>
   <tabstop>findModeRegularBt</tabstop>
+  <tabstop>findTextNext</tabstop>
+  <tabstop>findTextPrev</tabstop>
+  <tabstop>countBt</tabstop>
+  <tabstop>findAllinCourrent</tabstop>
+  <tabstop>findAllinAllOpen</tabstop>
+  <tabstop>copyReResultBt</tabstop>
+  <tabstop>findClearBt</tabstop>
+  <tabstop>findCloseBt</tabstop>
   <tabstop>replaceTextBox</tabstop>
   <tabstop>replaceWithBox</tabstop>
-  <tabstop>replaceFindNextBox</tabstop>
-  <tabstop>replaceBt</tabstop>
-  <tabstop>replaceAllBt</tabstop>
-  <tabstop>replaceAllinAllOpenBt</tabstop>
-  <tabstop>replaceCloseBt</tabstop>
   <tabstop>replaceBackwardBox</tabstop>
   <tabstop>replaceMatchWholeBox</tabstop>
   <tabstop>replaceMatchCaseBox</tabstop>
@@ -1344,13 +1340,19 @@
   <tabstop>replaceModeNormalBox</tabstop>
   <tabstop>replaceModeExtendBox</tabstop>
   <tabstop>replaceModeRegularBt</tabstop>
+  <tabstop>replaceFindNextBox</tabstop>
+  <tabstop>replaceBt</tabstop>
+  <tabstop>replaceAllBt</tabstop>
+  <tabstop>replaceAllinAllOpenBt</tabstop>
+  <tabstop>replaceCloseBt</tabstop>
   <tabstop>destFindDir</tabstop>
-  <tabstop>dirFindWhat</tabstop>
   <tabstop>selectDir</tabstop>
-  <tabstop>dirFindAll</tabstop>
-  <tabstop>dirReplaceAll</tabstop>
-  <tabstop>clearBt</tabstop>
-  <tabstop>dirClose</tabstop>
+  <tabstop>dirFindWhat</tabstop>
+  <tabstop>dirReplaceWhat</tabstop>
+  <tabstop>dealFileType</tabstop>
+  <tabstop>fileType</tabstop>
+  <tabstop>skipDir</tabstop>
+  <tabstop>skipDirNames</tabstop>
   <tabstop>dirFindMatchWholeBox</tabstop>
   <tabstop>dirFindMatchCaseBox</tabstop>
   <tabstop>dirFindModeNormalBox</tabstop>
@@ -1361,16 +1363,20 @@
   <tabstop>skipBinary</tabstop>
   <tabstop>skipFileMaxSize</tabstop>
   <tabstop>maxFileSizeSpinBox</tabstop>
+  <tabstop>dirFindAll</tabstop>
+  <tabstop>dirReplaceAll</tabstop>
+  <tabstop>clearBt</tabstop>
+  <tabstop>dirClose</tabstop>
   <tabstop>markTextBox</tabstop>
-  <tabstop>markAllBox</tabstop>
-  <tabstop>markClearBox</tabstop>
-  <tabstop>markClearAllBox</tabstop>
-  <tabstop>markCloseBt</tabstop>
   <tabstop>markMatchWholeBox</tabstop>
   <tabstop>markMatchCaseBox</tabstop>
   <tabstop>markModeNormalBox</tabstop>
   <tabstop>markModeExtendBox</tabstop>
   <tabstop>markModeRegularBt</tabstop>
+  <tabstop>markAllBox</tabstop>
+  <tabstop>markClearBox</tabstop>
+  <tabstop>markClearAllBox</tabstop>
+  <tabstop>markCloseBt</tabstop>
  </tabstops>
  <resources>
   <include location="RealCompare.qrc"/>
