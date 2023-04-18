@@ -887,7 +887,7 @@
     </message>
     <message>
         <source>Search Result</source>
-        <translation type="unfinished">查找结果99</translation>
+        <translation type="unfinished">查找结果</translation>
     </message>
     <message>
         <location filename="cceditor/ccnotepad.ui" line="1513"/>
