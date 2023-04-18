@@ -207,6 +207,7 @@ void FindWin::setTabWidget(QTabWidget *editTabWidget)
 void FindWin::setFindText(QString &text)
 {
 	ui.findComboBox->setEditText(text);
+	ui.findComboBox->setFocus();
 	addFindHistory(text);
 }
 

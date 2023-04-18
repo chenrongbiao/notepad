@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1458</width>
-    <height>789</height>
+    <width>2023</width>
+    <height>778</height>
    </rect>
   </property>
   <property name="font">
@@ -78,7 +78,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1458</width>
+     <width>2023</width>
      <height>27</height>
     </rect>
    </property>
@@ -235,6 +235,7 @@
     <addaction name="actionFileListView"/>
     <addaction name="actionShow_ToolBar"/>
     <addaction name="actionShow_Web_Addr"/>
+    <addaction name="actionFunctionList"/>
    </widget>
    <widget class="QMenu" name="menuCode">
     <property name="title">
@@ -523,7 +524,6 @@
    <addaction name="menuSet"/>
    <addaction name="menuTools"/>
    <addaction name="menuPlugin"/>
-   <addaction name="menuCompare"/>
    <addaction name="menuAbout"/>
    <addaction name="menuAbout_2"/>
   </widget>
@@ -2066,6 +2066,14 @@
     <string>Md5/Sha</string>
    </property>
   </action>
+  <action name="actionFunctionList">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Function List</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -3496,6 +3504,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionFunctionList</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CCNotePad</receiver>
+   <slot>slot_functionListView(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1011</x>
+     <y>388</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slot_actionNewFile_toggle(bool)</slot>
@@ -3546,7 +3570,6 @@
   <slot>slot_toMistyRose()</slot>
   <slot>slot_changeEnglish()</slot>
   <slot>slot_changeChinese()</slot>
-
   <slot>slot_langFormat()</slot>
   <slot>slot_reOpenTextMode()</slot>
   <slot>slot_reOpenHexMode()</slot>

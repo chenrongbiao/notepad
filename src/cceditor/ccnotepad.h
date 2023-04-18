@@ -87,6 +87,7 @@ enum NddDocType {
 //打开模式。1 文本 2 二进制 3 大文本只读 4 文本只读
 //const char* Open_Attr = "openid";
 class FileListView;
+class FunctionListView;
 
 class CCNotePad : public QMainWindow
 {
@@ -147,6 +148,9 @@ public:
 
 	void changeMarkColor(int sytleId);
 	void setUserDefShortcutKey(int shortcutId);
+
+	QString currentTabLabel();
+	QString currentTabFilePath();
 	
 	QtLangSet* getLangSet();
 signals:
@@ -344,6 +348,7 @@ private slots:
 	void slot_batchFind();
 	void on_loadReceneFile();
 	void slot_pluginMgr();
+	void slot_functionListView(bool check);
 #ifdef NO_PLUGIN
 	void onPlugWork(bool check);
 	void sendParaToPlugin(NDD_PROC_DATA& procData);
@@ -453,6 +458,8 @@ private:
 	void zoomto(int zoomValue);
 	void tabClose(QWidget* pEdit);
 
+	void initFunctionListDocWin();
+
 	void init_toolsMenu();
 	void changeBlankShowStatus(int showBlank);
 	void syncBlankShowStatus();
@@ -487,6 +494,9 @@ private:
 
 	QPointer<QDockWidget> m_dockFileListWin;
 	FileListView* m_fileListView;
+
+	QPointer<QDockWidget> m_dockFunctionListWin;
+	FunctionListView* m_functionListView;
 
 	QList<QString> m_receneOpenFileList;
 
