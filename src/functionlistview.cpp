@@ -148,7 +148,7 @@ void FunctionListView::findPytonFunction()
 	ScintillaEditView* _pEditView = _pNotePad->getCurEditView();
 	int textLines = _pEditView->lines();
 	QString pattern = "^\\s*\\w+\\s+\\w+\\s*\\("; //格式 def xxx(
-	QString pattern1 = "^\\s*\\class\\s+\\w+\\s*\\(";//格式： class xx(
+	QString pattern1 = "^\\s*\\class\\s+\\w+";//格式： class xx
 	QRegExp rx(pattern);
 
 	for (int i = 0; i < textLines; i++)
@@ -192,7 +192,7 @@ void FunctionListView::findCppFunction()
 	
 	for (int i = 0; i < textLines; i++)
 	{
-		QString text = _pEditView->text(i);
+		QString text = _pEditView->text(i).trimmed();
 		rx.setPattern(pattern3);
 		int pos = rx.indexIn(text);
 		if (pos >= 0)
@@ -334,6 +334,10 @@ void FunctionListView::updateCppUI()
 			int pos = rx.indexIn(functionItem.getKey());
 			if (pos >= 0)
 			{
+				QStringList txtArray = functionItem.getKey().split("::");
+				if (2 != txtArray.count()) continue;
+				int pos = txtArray.at(1).trimmed().indexOf(txtArray.at(0).trimmed());
+				if (0 != pos) continue;
 				item = new QStandardItem(QIcon(FuncListNode), functionItem.getKey());
 				item->setData(functionItem.getValue());
 				item->setEditable(false);
@@ -345,13 +349,13 @@ void FunctionListView::updateCppUI()
 				item = new QStandardItem(QIcon(FuncListLeaf), functionItem.getKey());
 				item->setData(QVariant(functionItem.getValue()));
 				item->setEditable(false);
-				if (functionItem.getKey().contains(className + "::"))
+				if (functionItem.getKey().contains(className + "::") && classIndex > 0)
 				{
 					QString tText = functionItem.getKey().replace(className + "::", "");
 					item->setText(tText);
 					model->item(0, 0)->child(classIndex - 1, 0)->setChild(classFuncIndex++, item);
 				}
-				else
+				else if (!functionItem.getKey().contains("::"))
 				{
 					model->item(0, 0)->setChild(classIndex++, item);
 				}
@@ -386,7 +390,7 @@ void FunctionListView::updatePythonUI()
 				item = new QStandardItem(QIcon(FuncListLeaf), functionItem.getKey());
 				item->setData(QVariant(functionItem.getValue()));
 				item->setEditable(false);
-				if (functionItem.getKey().contains("def ") && functionItem.getKey().contains("(self"))
+				if (functionItem.getKey().contains("def ") && functionItem.getKey().contains("(self") && classIndex > 0)
 				{
 					model->item(0, 0)->child(classIndex - 1, 0)->setChild(classFuncIndex++, item);
 				}
@@ -426,7 +430,14 @@ void FunctionListView::updateJavaUI()
 				item = new QStandardItem(QIcon(FuncListLeaf), functionItem.getKey());
 				item->setData(QVariant(functionItem.getValue()));
 				item->setEditable(false);
-				model->item(0, 0)->child(classIndex - 1, 0)->setChild(classFuncIndex++, item);
+				if (classIndex > 0)
+				{
+					model->item(0, 0)->child(classIndex - 1, 0)->setChild(classFuncIndex++, item);
+				}
+				else
+				{
+					model->item(0, 0)->setChild(classFuncIndex++, item);
+				}
 			}
 		}
 		ui.functionTreeView->expandAll();

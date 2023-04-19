@@ -502,6 +502,7 @@ FileExtLexer s_fileExtMapLexerId[FileExtMapLexerIdLen] = {
 {QString("v"), L_VERILOG},
 {QString("rs"), L_RUST},
 {QString("frm"), L_VB},
+{QString("patch"), L_DIFF},
 {QString("NULL"), L_EXTERNAL},
 };
 
@@ -5489,6 +5490,10 @@ bool  CCNotePad::saveFile(QString fileName, ScintillaEditView* pEdit, bool isBak
 			QFile::remove(swapFilePath);
 	}
 		
+	}
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->showFunctionList();
 	}
 	return true;
 }
