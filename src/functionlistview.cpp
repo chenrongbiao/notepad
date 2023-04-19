@@ -74,6 +74,8 @@ void FunctionListView::showFunctionList() {
 	CCNotePad* _pNotePad = dynamic_cast<CCNotePad*>(m_pNotepad);
 	QString filePath = _pNotePad->currentTabFilePath();
 	if (filePath == nullptr) return;
+	m_staticFunctionNameList->clear();
+	model->clear();
 	if (filePath.endsWith(".c"))
 	{
 		findCFunction();
@@ -112,7 +114,6 @@ void FunctionListView::findJavaFunction()
 	QString pattern2 = "^\\s*\\w+\\s+\\w+\\s+\\w+\\s*\\(";//格式： public String encode(String keyString, String stringToEncode)
 	QRegExp rx(pattern);
 
-	m_staticFunctionNameList->clear();
 	for (int i = 0; i < textLines; i++)
 	{
 		QString text = _pEditView->text(i);
@@ -150,7 +151,6 @@ void FunctionListView::findPytonFunction()
 	QString pattern1 = "^\\s*\\class\\s+\\w+\\s*\\(";//格式： class xx(
 	QRegExp rx(pattern);
 
-	m_staticFunctionNameList->clear();
 	for (int i = 0; i < textLines; i++)
 	{
 		QString text = _pEditView->text(i);
@@ -190,7 +190,6 @@ void FunctionListView::findCppFunction()
 	QString pattern5 = "^\\s*\\w+\\::\\~\\w+\\s*\\("; //格式: class::class(
 	QRegExp rx(pattern);
 	
-	m_staticFunctionNameList->clear();
 	for (int i = 0; i < textLines; i++)
 	{
 		QString text = _pEditView->text(i);
@@ -261,7 +260,6 @@ void FunctionListView::findCFunction() {
 	QString pattern2 = "\\else";
 	QRegExp rx(pattern);
 
-	m_staticFunctionNameList->clear();
 	for (int i = 0; i < textLines; i++) 
 	{
 		QString text = _pEditView->text(i);
