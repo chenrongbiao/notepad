@@ -34,6 +34,7 @@ struct HexFileMgr;
 struct TextFileMgr;
 struct BigTextEditFileMgr;
 class QtLangSet;
+class ActorProcessor;
 
 static const char* Tail_Thread = "tailthread";
 
@@ -349,8 +350,10 @@ private slots:
 	void on_loadReceneFile();
 	void slot_pluginMgr();
 #ifdef NO_PLUGIN
+    void onPlugWorkV2(bool check);
 	void onPlugWork(bool check);
-	void sendParaToPlugin(NDD_PROC_DATA& procData);
+    void sendParaToPlugin(NDD_PROC_DATA& procData);
+    void sendParaToPluginV2(NDD_PROC_DATA& procData);
 #endif
 	void slot_showWebAddr(bool check);
 	void slot_langFileSuffix();
@@ -524,6 +527,10 @@ private:
 	
 
 	QSharedMemory* m_shareMem;
+#ifdef NO_PLUGIN
+    //actor执行与存储单元
+    ActorProcessor* processor;
+#endif
 
 
 	//最近打开的对比文件和目录列表。做一个环形区

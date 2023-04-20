@@ -32,6 +32,8 @@
 #include "pluginmgr.h"
 #include "plugin.h"
 #include "pluginGl.h"
+#include "actor.h"
+#include "actorprocessor.h"
 #endif
 
 #ifdef Q_OS_WIN
@@ -1211,6 +1213,10 @@ CCNotePad::CCNotePad(bool isMainWindows, QWidget *parent)
 		restoreGeometry(lastGeo);
 	}
 #endif
+
+#ifdef NO_PLUGIN
+    processor = new ActorProcessor();
+#endif
 	}
 
 CCNotePad::~CCNotePad()
@@ -1748,9 +1754,10 @@ void CCNotePad::onPlugFound(NDD_PROC_DATA& procData, QMenu* pUserData)
 	{
 		QAction* pAction = new QAction(procData.m_strPlugName, pMenu);
 		pMenu->addAction(pAction);
-	pAction->setText(procData.m_strPlugName);
-	pAction->setData(procData.m_strFilePath);
-	connect(pAction, &QAction::triggered, this, &CCNotePad::onPlugWork);
+        pAction->setText(procData.m_strPlugName);
+        pAction->setData(procData.m_strFilePath);
+        connect(pAction, &QAction::triggered, this, &CCNotePad::onPlugWork);
+        connect(pAction, &QAction::triggered, this, &CCNotePad::onPlugWorkV2);
 	}
 	else if (procData.m_menuType == 1)
 	{
@@ -1761,6 +1768,7 @@ void CCNotePad::onPlugFound(NDD_PROC_DATA& procData, QMenu* pUserData)
 		//菜单句柄通过procData传递到插件中
 		procData.m_rootMenu = pluginMenu;
 		sendParaToPlugin(procData);
+        sendParaToPluginV2(procData);
 	}
 	else
 	{
@@ -1796,6 +1804,39 @@ void CCNotePad::onPlugWork(bool check)
 	}
 }
 
+//真正执行插件的工作
+void CCNotePad::onPlugWorkV2(bool check)
+{
+
+    qDebug() << "test1";
+    QAction* pAct = dynamic_cast<QAction*>(sender());
+    if (pAct != nullptr)
+    {
+        QString plugPath = pAct->data().toString();
+
+        QLibrary* pLib = new QLibrary(plugPath);
+
+        NDD_PROC_MAIN_V2_CALLBACK pMainCallBack;
+        pMainCallBack = (NDD_PROC_MAIN_V2_CALLBACK)pLib->resolve("NDD_PROC_MAIN_V2");
+
+        if (pMainCallBack != NULL)
+        {
+            std::function<QsciScintilla* ()> foundCallBack = std::bind(&CCNotePad::getCurEditView, this);
+            Actor* actor = new Actor;
+
+            actor->registerFunction([this](QString name, int num){openFile(name,num);});
+
+            processor->registerActor("openFile",actor);
+            pMainCallBack(this, plugPath, processor, nullptr);
+        }
+        else
+        {
+            ui.statusBar->showMessage(tr("plugin %1 load failed !").arg(plugPath), 10000);
+        }
+
+    }
+}
+
 //把插件需要的参数，传递到插件中去
 void CCNotePad::sendParaToPlugin(NDD_PROC_DATA& procData)
 {
@@ -1816,6 +1857,32 @@ void CCNotePad::sendParaToPlugin(NDD_PROC_DATA& procData)
 		{
 			ui.statusBar->showMessage(tr("plugin %1 load failed !").arg(plugPath), 10000);
 		}
+}
+
+
+void CCNotePad::sendParaToPluginV2(NDD_PROC_DATA& procData)
+{
+        qDebug() <<"test5";
+        QString plugPath = procData.m_strFilePath;
+
+        QLibrary* pLib = new QLibrary(plugPath);
+
+        NDD_PROC_MAIN_V2_CALLBACK pMainCallBack;
+        pMainCallBack = (NDD_PROC_MAIN_V2_CALLBACK)pLib->resolve("NDD_PROC_MAIN_V2");
+
+        if (pMainCallBack != NULL)
+        {
+            Actor* actor = new Actor;
+
+            actor->registerFunction([this](QString name, int num){openFile(name,num);});
+
+            processor->registerActor("openFile",actor);
+            pMainCallBack(this, plugPath, processor, &procData);
+        }
+        else
+        {
+            ui.statusBar->showMessage(tr("plugin %1 load failed !").arg(plugPath), 10000);
+        }
 }
 
 void CCNotePad::loadPluginProcs(QString strLibDir, QMenu* pMenu)
