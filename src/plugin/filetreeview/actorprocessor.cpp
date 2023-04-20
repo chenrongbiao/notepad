@@ -16,7 +16,6 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-
 #include "actorprocessor.h"
 ActorProcessor::ActorProcessor():
     m_actorMap(new std::unordered_map<std::string, Actor*>)

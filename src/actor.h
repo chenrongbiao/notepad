@@ -1,4 +1,6 @@
-﻿
+﻿#ifndef _ACTOR_H_
+#define _ACTOR_H_
+
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -107,3 +109,5 @@ private:
     */
     FunctionWapper m_invokeFunctionWapper;
 };
+
+#endif

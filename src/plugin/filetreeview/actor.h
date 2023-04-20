@@ -16,8 +16,9 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
+#ifndef _ACTOR_H_
+#define _ACTOR_H_
 
-#pragma once
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -120,3 +121,5 @@ private:
     */
     FunctionWapper m_invokeFunctionWapper;
 };
+
+#endif
