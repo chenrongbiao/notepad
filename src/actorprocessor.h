@@ -1,5 +1,5 @@
-#ifndef EVENTPROCESSOR_H
-#define EVENTPROCESSOR_H
+﻿#ifndef _PROCESSOR_H
+#define _PROCESSOR_H
 
 #include <string>
 #include <functional>
@@ -25,9 +25,6 @@ public:
             (*m_actorMap)[route]->invoke(std::forward<Args>(args)...);
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename R, typename ... Args>
     R invoke(const std::string& route,Args&& ...args) const
     {
@@ -36,30 +33,16 @@ public:
         return nullptr;
     }
 
-    /**
-    * @brief 注册一个actor，其中route是唯一的
-    */
     void registerActor(const std::string& route, Actor*actor);
 
-    /**
-    * @brief 删除一个actor
-    */
     void removeActor(const std::string& route);
-
-    /**
-    * @brief 查找一个actor， 返回其指针
-    */
     Actor* findActor(const std::string& route);
-
-    /**
-    * @brief 重置一个actor，注意原有的actor会被删除
-    */
     bool resetActor(const std::string& route,Actor*actor);
 
 private:
     std::unordered_map<std::string, Actor*>* m_actorMap;
+
 private:
-    // not allow copy constroct
     ActorProcessor(ActorProcessor&&)=delete;
     ActorProcessor& operator=(const ActorProcessor&)=delete;
 };

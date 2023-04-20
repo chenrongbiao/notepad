@@ -1,6 +1,6 @@
 ﻿/**
- ** This file is part of the NoteBook project.
- ** Copyright 2022 ji wang <matheuter@gmail.com>.
+ ** This file is part of ndd plugin file tree view
+ ** Copyright ji wang <matheuter@gmail.com>.
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU Lesser General Public License as

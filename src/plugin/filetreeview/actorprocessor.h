@@ -1,5 +1,24 @@
-#ifndef EVENTPROCESSOR_H
-#define EVENTPROCESSOR_H
+﻿/**
+ ** This file is part of ndd plugin file tree view
+ ** Copyright ji wang <matheuter@gmail.com>.
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU Lesser General Public License as
+ ** published by the Free Software Foundation, either version 3 of the
+ ** License, or (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public License
+ ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **/
+
+
+#ifndef _PROCESSOR_H
+#define _PROCESSOR_H
 
 #include <string>
 #include <functional>
@@ -15,9 +34,6 @@ public:
     ~ActorProcessor();
 public:
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename ... Args>
     void invoke(const std::string& route,Args&& ... args) const noexcept
     {
@@ -25,9 +41,6 @@ public:
             (*m_actorMap)[route]->invoke(std::forward<Args>(args)...);
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename R, typename ... Args>
     R invoke(const std::string& route,Args&& ...args) const
     {
@@ -36,24 +49,12 @@ public:
         return nullptr;
     }
 
-    /**
-    * @brief 注册一个actor，其中route是唯一的
-    */
     void registerActor(const std::string& route, Actor*actor);
 
-    /**
-    * @brief 删除一个actor
-    */
     void removeActor(const std::string& route);
 
-    /**
-    * @brief 查找一个actor， 返回其指针
-    */
     Actor* findActor(const std::string& route);
 
-    /**
-    * @brief 重置一个actor，注意原有的actor会被删除
-    */
     bool resetActor(const std::string& route,Actor*actor);
 
 private:

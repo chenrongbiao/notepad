@@ -1,4 +1,4 @@
-#pragma once
+﻿
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -7,10 +7,6 @@
 
 #include "functiontraits.h"
 
-/**
- * @brief Actor class, which encapsulates the event model
- * @note enable_shared_from_this allows us to get safe Pointers internally
- */
 class Actor : public std::enable_shared_from_this<Actor>
 {
 public:
@@ -21,27 +17,18 @@ public:
     Actor(){}
     ~Actor(){}
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename Function>
     void operator+=(Function&& function_any) noexcept
     {
         m_invokeFunctionWapper =  { std::bind(&invoker<Function>::apply, function_any,  std::placeholders::_1, std::placeholders::_2) };
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename Function>
     void registerFunction(Function&& function_any) noexcept
     {
         m_invokeFunctionWapper =  { std::bind(&invoker<Function>::apply, function_any,  std::placeholders::_1, std::placeholders::_2) };
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename ... Args>
     void invoke(Args&& ... args) const noexcept
     {
@@ -49,9 +36,6 @@ public:
         m_invokeFunctionWapper(&args_tuple, nullptr);
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename R, typename ... Args>
     R invoke(Args&& ...args) const
     {
@@ -66,12 +50,8 @@ public:
         return return_value;
     }
 
-    Ptr getSharedPtr()
-    {
-        return shared_from_this();
-    }
-
 public:
+
     /**
     * @brief This struct encapsulates a function,
     * essentially storing the return value and parameters in two variables

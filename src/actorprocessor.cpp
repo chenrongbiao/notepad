@@ -1,11 +1,9 @@
-#include "actorprocessor.h"
+﻿#include "actorprocessor.h"
+
 ActorProcessor::ActorProcessor():
     m_actorMap(new std::unordered_map<std::string, Actor*>)
 {}
 
-/**
- * @brief
- */
 ActorProcessor::~ActorProcessor()
 {
     for (auto& item : (*m_actorMap))
@@ -17,17 +15,11 @@ ActorProcessor::~ActorProcessor()
         delete m_actorMap;
 }
 
-/**
- * @brief
- */
 void ActorProcessor::registerActor(const std::string &route, Actor *actor)
 {
     m_actorMap->insert(std::make_pair(route,actor));
 }
 
-/**
- * @brief
- */
 void ActorProcessor::removeActor(const std::string &route)
 {
     auto iter = (*m_actorMap).find(route);
@@ -38,9 +30,6 @@ void ActorProcessor::removeActor(const std::string &route)
     }
 }
 
-/**
- * @brief
- */
 Actor *ActorProcessor::findActor(const std::string &route)
 {
     auto iter = (*m_actorMap).find(route);
@@ -51,9 +40,7 @@ Actor *ActorProcessor::findActor(const std::string &route)
     return nullptr;
 }
 
-/**
- * @brief
- */
+
 bool ActorProcessor::resetActor(const std::string &route, Actor *actor)
 {
     auto iter = (*m_actorMap).find(route);
