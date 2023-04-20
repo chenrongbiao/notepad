@@ -1,3 +1,21 @@
+﻿/**
+ ** This file is part of ndd file tree view plugin
+ ** Copyright 2022-2023 ji wang <matheuter@gmail.com>.
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU Lesser General Public License as
+ ** published by the Free Software Foundation, either version 3 of the
+ ** License, or (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU Lesser General Public License for more details.
+ **
+ ** You should have received a copy of the GNU Lesser General Public License
+ ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **/
+
 #pragma once
 #include <cstdint>
 #include <string>
@@ -57,11 +75,6 @@ public:
         return return_value;
     }
 
-    Ptr getSharedPtr()
-    {
-        return shared_from_this();
-    }
-
 public:
     /**
     * @brief This struct encapsulates a function,
@@ -71,9 +84,6 @@ public:
     template<typename Function>
     struct invoker
     {
-        /**
-         * @brief
-         */
         static inline void apply(const Function& func, void* bl, void* result)
         {
             using tuple_type = typename function_traits<Function>::tuple_type;
@@ -81,9 +91,6 @@ public:
             call(func, *tp, result);
         }
 
-        /**
-         * @brief
-         */
         template<typename F, typename ... Args>
         static typename std::enable_if<std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
         call(const F& f, const std::tuple<Args...>& tp, void*)
@@ -91,9 +98,6 @@ public:
             call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
         }
 
-        /**
-         * @brief
-         */
         template<typename F, typename ... Args>
         static typename std::enable_if<!std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
         call(const F& f, const std::tuple<Args...>& tp, void* result)
@@ -102,9 +106,6 @@ public:
             *(decltype(r)*)result = r;
         }
 
-        /**
-        * @brief
-        */
         template<typename F, size_t... I, typename ... Args>
         static auto call_helper(const F& f, const std::index_sequence<I...>& h, const std::tuple<Args...>& tup)
         {
