@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <QString>
 #include <QMenu>
 
@@ -21,8 +21,8 @@ struct ndd_proc_data
 	QString m_strComment;        // [可选]插件说明
 	QString m_version;           // [可选]版本号码
 	QString m_auther;            // [可选]作者名称
-	int 	m_menuType;			 // [可选]菜单类型(0：不使用二级菜单 1：创建二级菜单)
-	QMenu* 	m_rootMenu;			 // [依赖]当 m_menuType = 1，给出二级根菜单的地址(默认为 nullptr)
+	int 	m_menuType;          // [可选]菜单类型(0：不使用二级菜单 1：创建二级菜单)
+	QMenu* 	m_rootMenu;          // [依赖]当 m_menuType = 1，给出二级根菜单的地址(默认为 nullptr)
 
 	ndd_proc_data(): m_rootMenu(nullptr), m_menuType(0)
 	{
