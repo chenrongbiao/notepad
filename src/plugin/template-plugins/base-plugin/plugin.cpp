@@ -7,11 +7,14 @@
 
 #include <QDebug>
 
+/**************************************************************
 // 当编译标志 NOTEPAD_PLUGIN_DECLARE_PLUGIN_CONFIG 被定义
     // 将会自动 #include <plugin-config.h>，并提供几个插件相关的宏
         // #define NOTEPAD_VERSION "v1.23.2"
         // #define PLUGIN_NAME     "opencc-demo-plugin"
         // #define PLUGIN_VERSION  "0.1"
+
+**************************************************************/
 
 // 使用可扩展宏 IDENTIFY_
 NOTEPAD_PLUGIN_METADATA_IDENTIFY_ {
