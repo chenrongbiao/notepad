@@ -1,20 +1,23 @@
-# base-widget-ui-plugin/CMakeLists.txt
+# base-plugin-window-ui/CMakeLists.txt
     # 用于在源代码中构建一个插件的模板
     
 # 如果不是在源代码中构建插件，请不要使用这个部分
     # 如果想在源代码中添加更多内置模板
-    # 请替换 base-widget-ui-plugin 为你的插件名称
-    # base-widget-ui-plugin -> your plugin name
+    # 请替换 base-plugin-window-ui 为你的插件名称
+    # base-plugin-window-ui -> your plugin name
 
-set(LOCAL_PLUGIN_NAME "base-widget-ui-plugin")
+set(LOCAL_PLUGIN_NAME "base-plugin-window-ui")
+set(LOCAL_PLUGIN_VERSION "0.1")
 
-# base-widget-ui-plugin 核心构建
-# 在模块化构建中，这个部分代表着构建 base-widget-ui-plugin 插件
-# 1. 默认构建时产出的目标为 base-widget-ui-plugin
-# 2. 在此处可对 base-widget-ui-plugin 目标进行详细的构建计划
+configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/config.h.in plugin-config.h @ONLY)
+
+# base-plugin-window-ui 核心构建
+# 在模块化构建中，这个部分代表着构建 base-plugin-window-ui 插件
+# 1. 默认构建时产出的目标为 base-plugin-window-ui
+# 2. 在此处可对 base-plugin-window-ui 目标进行详细的构建计划
 
 if(TRUE)
-    # 准备构建 base-widget-ui-plugin 主程序扩展
+    # 准备构建 base-plugin-window-ui 主程序扩展
     spark_file_glob(LocalSources
         ./*.h ./*.cpp ./*.ui
     )
@@ -53,7 +56,12 @@ if(TRUE)
 endif(TRUE)
 
 
-# ----------------- base-widget-ui-plugin 构建宏支持相关  ----------------- #
+# ----------------- base-plugin-window-ui 构建宏支持相关  ----------------- #
+
+target_compile_definitions(${LOCAL_PLUGIN_NAME}
+    # 构建插件时，自动引入的插件配置
+    PRIVATE 
+        NOTEPAD_PLUGIN_DECLARE_PLUGIN_CONFIG)
 
 if(WIN32 AND NOTEPAD_BUILD_BY_SHARED)
     # 在 Windows 中构建时，需要关注此库的构建形式，QScintilla 应该以何种方式编译

@@ -1,20 +1,23 @@
-# base-widget-plugin/CMakeLists.txt
+# base-plugin-widget/CMakeLists.txt
     # 用于在源代码中构建一个插件的模板
     
 # 如果不是在源代码中构建插件，请不要使用这个部分
     # 如果想在源代码中添加更多内置模板
-    # 请替换 base-widget-plugin 为你的插件名称
-    # base-widget-plugin -> your plugin name
+    # 请替换 base-plugin-widget 为你的插件名称
+    # base-plugin-widget -> your plugin name
 
-set(LOCAL_PLUGIN_NAME "base-widget-plugin")
+set(LOCAL_PLUGIN_NAME "base-plugin-widget")
+set(LOCAL_PLUGIN_VERSION "0.1")
 
-# base-widget-plugin 核心构建
-# 在模块化构建中，这个部分代表着构建 base-widget-plugin 插件
-# 1. 默认构建时产出的目标为 base-widget-plugin
-# 2. 在此处可对 base-widget-plugin 目标进行详细的构建计划
+configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/config.h.in plugin-config.h @ONLY)
+
+# base-plugin-widget 核心构建
+# 在模块化构建中，这个部分代表着构建 base-plugin-widget 插件
+# 1. 默认构建时产出的目标为 base-plugin-widget
+# 2. 在此处可对 base-plugin-widget 目标进行详细的构建计划
 
 if(TRUE)
-    # 准备构建 base-widget-plugin 主程序扩展
+    # 准备构建 base-plugin-widget 主程序扩展
     spark_file_glob(LocalSources
         ./*.h ./*.cpp ./*.ui
     )
@@ -53,7 +56,12 @@ if(TRUE)
 endif(TRUE)
 
 
-# ----------------- base-widget-plugin 构建宏支持相关  ----------------- #
+# ----------------- base-plugin-widget 构建宏支持相关  ----------------- #
+
+target_compile_definitions(${LOCAL_PLUGIN_NAME}
+    # 构建插件时，自动引入的插件配置
+    PRIVATE 
+        NOTEPAD_PLUGIN_DECLARE_PLUGIN_CONFIG)
 
 if(WIN32 AND NOTEPAD_BUILD_BY_SHARED)
     # 在 Windows 中构建时，需要关注此库的构建形式，QScintilla 应该以何种方式编译
