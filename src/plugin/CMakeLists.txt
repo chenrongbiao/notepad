@@ -12,6 +12,7 @@ if(USE_NOTEPAD_PLUGIN)
         add_subdirectory(helloworld-next)
         # 基于源代码构建的系列插件模板
         add_subdirectory(template-plugins/base-plugin)
+        add_subdirectory(template-plugins/base-plugin-editor)
         add_subdirectory(template-plugins/base-widget-plugin)
         add_subdirectory(template-plugins/base-widget-ui-plugin)
         add_subdirectory(template-plugins/base-secondary-menu-plugin)
