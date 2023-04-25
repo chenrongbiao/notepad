@@ -7,6 +7,9 @@
     # linux-terminal-plugin -> your plugin name
 
 set(LOCAL_PLUGIN_NAME "linux-terminal-plugin")
+set(LOCAL_PLUGIN_VERSION "0.1")
+
+configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/config.h.in plugin-config.h @ONLY)
 
 # linux-terminal-plugin 核心构建
 # 在模块化构建中，这个部分代表着构建 linux-terminal-plugin 插件
@@ -55,6 +58,11 @@ endif(TRUE)
 
 # ----------------- linux-terminal-plugin 构建宏支持相关  ----------------- #
 
+target_compile_definitions(${LOCAL_PLUGIN_NAME}
+    # 构建插件时，自动引入的插件配置
+    PRIVATE 
+        NOTEPAD_PLUGIN_DECLARE_PLUGIN_CONFIG)
+
 if(WIN32 AND NOTEPAD_BUILD_BY_SHARED)
     # 在 Windows 中构建时，需要关注此库的构建形式，QScintilla 应该以何种方式编译
     target_compile_definitions(${LOCAL_PLUGIN_NAME} 
@@ -90,7 +98,8 @@ spark_add_external_git_cmake_project(lxqt-build-tool
         ""
         ""
         ""
-        GIT_SHALLOW TRUE)
+        GIT_SHALLOW TRUE
+        EXCLUDE_FROM_ALL TRUE)
 
 # 2. QTerminal 项目，依赖于 lxqt-build-tool 配置来构建
 spark_add_external_git_cmake_project(qtermwidget_git
@@ -99,7 +108,8 @@ spark_add_external_git_cmake_project(qtermwidget_git
         "-DCMAKE_PREFIX_PATH=${lxqt-build-tool-install};-DCMAKE_INSTALL_PREFIX=\${prj_install}"
         "--;-j12"
         ""
-        GIT_SHALLOW TRUE)
+        GIT_SHALLOW TRUE
+        EXCLUDE_FROM_ALL TRUE)
 
 # -------------------------------------------------------------------------------
 # 3. 构建完成时，引入平台函数
@@ -124,7 +134,7 @@ add_dependencies(qtermwidget_git lxqt-build-tool)
 # 2.明确声明 qtermwidget 依赖于 qtermwidget_git
 add_dependencies(qtermwidget qtermwidget_git)
 
-# 3.明确声明 qtermwidget 依赖于 qtermwidget_git
+# 3.明确声明 linux-terminal-plugin 依赖于 qtermwidget
 add_dependencies(${LOCAL_PLUGIN_NAME} qtermwidget qtermwidget_git lxqt-build-tool)
 
 # 4. 链接 qtermwidget 目标
