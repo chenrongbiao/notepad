@@ -1,4 +1,4 @@
-﻿#include "ndd_plugin_implement.h"
+#include "ndd_plugin_implement.h"
 #include "ui_ndd_plugin_implement.h"
 
 #include <qsciscintilla.h>
@@ -19,7 +19,7 @@ NddPluginImplement::NddPluginImplement(QWidget *parent, QsciScintilla *pEdit) : 
 {
     ui->setupUi(this);
 
-    StatusWidget *statusWidget = new StatusWidget(currentEdit);
+    statusWidget = new StatusWidget(parent);
     statusWidget->setShowMessage(u8"提示", u8"正在检查更新");
     statusWidget->setDirection(StatusWidget::TopIn, StatusWidget::RightOut);
     statusWidget->start(false);

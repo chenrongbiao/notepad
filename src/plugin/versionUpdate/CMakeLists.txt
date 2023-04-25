@@ -7,6 +7,9 @@
     # version-update -> your plugin name
 
 set(LOCAL_PLUGIN_NAME "version-update")
+set(LOCAL_PLUGIN_VERSION "0.1")
+
+configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/config.h.in plugin-config.h @ONLY)
 
 # version-update 核心构建
 # 在模块化构建中，这个部分代表着构建 version-update 插件
@@ -55,6 +58,11 @@ endif(TRUE)
 
 
 # ----------------- version-update 构建宏支持相关  ----------------- #
+
+target_compile_definitions(${LOCAL_PLUGIN_NAME}
+    # 构建插件时，自动引入的插件配置
+    PRIVATE 
+        NOTEPAD_PLUGIN_DECLARE_PLUGIN_CONFIG)
 
 if(WIN32 AND NOTEPAD_BUILD_BY_SHARED)
     # 在 Windows 中构建时，需要关注此库的构建形式，QScintilla 应该以何种方式编译
