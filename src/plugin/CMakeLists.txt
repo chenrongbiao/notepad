@@ -17,6 +17,8 @@ if(USE_NOTEPAD_PLUGIN)
         add_subdirectory(template-plugins/base-plugin-widget)
         add_subdirectory(template-plugins/base-plugin-window)
         add_subdirectory(template-plugins/base-plugin-window-ui)
+        add_subdirectory(template-plugins/base-plugin-interface)
+
         # add_subdirectory(template-plugins/base-secondary-menu-plugin)
         # add_subdirectory(template-plugins/base-secondary-menu-plugin-v1)
         # add_subdirectory(template-plugins/base-secondary-menu-ui-plugin-v1)
