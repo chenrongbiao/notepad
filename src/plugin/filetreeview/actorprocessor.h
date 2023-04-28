@@ -29,14 +29,10 @@ public:
     template<typename R, typename ... Args>
     R invoke(const std::string& route,Args&& ...args) const
     {
-        qDebug() << route.c_str();
-        qDebug() << m_actorMap->size();
         if (m_actorMap->find(route) != m_actorMap->end()){
-            qDebug() << "test";
             return (*m_actorMap)[route]->invoke<R>(std::forward<Args>(args)...);
         }
-        qDebug() << "test fault";
-        return NULL;
+        return nullptr;
     }
 
     void registerActor(const std::string& route, Actor*actor);

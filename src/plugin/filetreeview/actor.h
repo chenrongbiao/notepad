@@ -1,22 +1,4 @@
-﻿/**
- ** This file is part of ndd plugin file tree view
- ** Copyright ji wang <matheuter@gmail.com>.
- **
- ** This program is free software: you can redistribute it and/or modify
- ** it under the terms of the GNU Lesser General Public License as
- ** published by the Free Software Foundation, either version 3 of the
- ** License, or (at your option) any later version.
- **
- ** This program is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied warranty of
- ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- ** GNU Lesser General Public License for more details.
- **
- ** You should have received a copy of the GNU Lesser General Public License
- ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-
-#ifndef _ACTOR_H_
+﻿#ifndef _ACTOR_H_
 #define _ACTOR_H_
 
 #include <cstdint>
@@ -24,13 +6,44 @@
 #include <memory>
 #include <tuple>
 #include <functional>
+#include <utility>
 
-#include "functiontraits.h"
+template<typename T>
+struct function_traits;
 
-/**
- * @brief Actor class, which encapsulates the event model
- * @note enable_shared_from_this allows us to get safe Pointers internally
- */
+template<typename ReturnType, typename... Args>
+struct function_traits<ReturnType(Args...)>{
+    using tuple_type = std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> ;
+};
+
+template<typename ReturnType, typename... Args>
+struct function_traits<ReturnType(*)(Args...)>
+    : function_traits<ReturnType(Args...)> {};
+
+template<typename ReturnType, typename... Args>
+struct function_traits<std::function<ReturnType(Args...)>>
+    : function_traits<ReturnType(Args...)> {};
+
+template <typename ReturnType, typename ClassType, typename... Args>
+struct function_traits<ReturnType(ClassType::*)(Args...)>
+    : function_traits<ReturnType(Args...)>{};
+
+template <typename ReturnType, typename ClassType, typename... Args>
+struct function_traits<ReturnType(ClassType::*)(Args...) const>
+    : function_traits<ReturnType(Args...)> {};
+
+template <typename ReturnType, typename ClassType, typename... Args>
+struct function_traits<ReturnType(ClassType::*)(Args...) volatile>
+    : function_traits<ReturnType(Args...)> {};
+
+template <typename ReturnType, typename ClassType, typename... Args>
+struct function_traits<ReturnType(ClassType::*)(Args...) const volatile>
+    : function_traits<ReturnType(Args...)> {};
+
+template<typename Callable>
+struct function_traits
+    : function_traits<decltype(&Callable::operator())> {};
+
 class Actor : public std::enable_shared_from_this<Actor>
 {
 public:
@@ -73,13 +86,7 @@ public:
     }
 
 public:
-    /**
-    * @briefThis code is a function template that contains a structure named invoker.
-    * The invoker structure contains three functions: apply, call, and call_helper.
-    * The apply function calls the call function, and the call function calls the call_helper function.
-    * The call_helper function unpacks the parameters from std::tuple and passes them to the function f and returns the return value of f.
-    * The purpose of this code is to unpack the parameters of a function from std::tuple and call that function.
-    */
+
     template<typename Function>
     struct invoker
     {

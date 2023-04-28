@@ -1,0 +1,17 @@
+[quicksearch]
+[Mainwindow]
+	openFile
+	getCurrentEdit
+
+[detial]
+[Mainwindow]
+
+[void openFile(QString path, int index)]
+-description: 打开一个文件
+-path: 文件路径（全路径，包含文件名）
+-index: 从哪个位置开始打开文件。默认为0（第一个）
+-returntype: void
+
+[QSciScintilla* getCurrentEdit()] 
+-description: 获取当前编辑窗口指针,以返回值形式获得
+-returntype: QSciScintilla*
