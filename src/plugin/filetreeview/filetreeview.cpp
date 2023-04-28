@@ -25,7 +25,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QProcess>
-
+#include <qsciscintilla.h>
 #include"actorprocessor.h"
 #include "filesystemmodel.h"
 
@@ -172,8 +172,6 @@ void FileTreeView::setMainWindow(QWidget *notepadWidget)
     Q_D(FileTreeView);
     d->m_notepadWidget = notepadWidget;
 }
-
-
 
 void FileTreeView::slotCliecked(const QModelIndex &index)
 {

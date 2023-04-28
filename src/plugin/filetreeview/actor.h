@@ -66,22 +66,19 @@ public:
     template<typename R, typename ... Args>
     R invoke(Args&& ...args) const
     {
-        using tuple_args_type = std::tuple<Args...>;
-        char data[sizeof(tuple_args_type)];
-        std::tuple<Args...>* tuples_pointer = new (data) tuple_args_type;
-
-        *tuples_pointer = std::make_tuple(std::forward<Args>(args)...);
-
+        auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
         R return_value;
-        m_invokeFunctionWapper(tuples_pointer, &return_value);
+        m_invokeFunctionWapper(&args_tuple, &return_value);
         return return_value;
     }
 
 public:
     /**
-    * @brief This struct encapsulates a function,
-    * essentially storing the return value and parameters in two variables
-    * which can unify the way the function is stored.
+    * @briefThis code is a function template that contains a structure named invoker.
+    * The invoker structure contains three functions: apply, call, and call_helper.
+    * The apply function calls the call function, and the call function calls the call_helper function.
+    * The call_helper function unpacks the parameters from std::tuple and passes them to the function f and returns the return value of f.
+    * The purpose of this code is to unpack the parameters of a function from std::tuple and call that function.
     */
     template<typename Function>
     struct invoker

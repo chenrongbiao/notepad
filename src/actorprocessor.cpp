@@ -17,6 +17,7 @@ ActorProcessor::~ActorProcessor()
 
 void ActorProcessor::registerActor(const std::string &route, Actor *actor)
 {
+    qDebug()<< route.c_str();
     m_actorMap->insert(std::make_pair(route,actor));
 }
 

@@ -41,14 +41,10 @@ public:
     template<typename R, typename ... Args>
     R invoke(Args&& ...args) const
     {
-        using tuple_args_type = std::tuple<Args...>;
-        char data[sizeof(tuple_args_type)];
-        std::tuple<Args...>* tuples_pointer = new (data) tuple_args_type;
-
-        *tuples_pointer = std::make_tuple(std::forward<Args>(args)...);
+        auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
 
         R return_value;
-        m_invokeFunctionWapper(tuples_pointer, &return_value);
+        m_invokeFunctionWapper(&args_tuple, &return_value);
         return return_value;
     }
 

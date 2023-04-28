@@ -1298,8 +1298,10 @@ void CCNotePad::quickshow()
 	ui.statusBar->insertPermanentWidget(3, m_lineEndLabel);
 	ui.statusBar->insertPermanentWidget(4, m_codeStatusLabel);
 	
-
 	initToolBar();
+
+    //曝露接口统一处理单元
+    initActor();
 
 	m_saveFile->setEnabled(false);
 	m_saveAllFile->setEnabled(false);
@@ -1331,12 +1333,7 @@ void CCNotePad::quickshow()
 	//只有主窗口才监控openwith的文件
 	if (m_isMainWindows)
 	{
-
 		initNotePadSqlOptions();
-
-		
-
-
 	}
 
 	m_isInitBookMarkAct = false;
@@ -1804,10 +1801,9 @@ void CCNotePad::onPlugWork(bool check)
 	}
 }
 
-//真正执行插件的工作
+//真正执行插件的工作（这个函数貌似不起作用，真正执行的是sendParaToPlugin）
 void CCNotePad::onPlugWorkV2(bool check)
 {
-
     qDebug() << "test1";
     QAction* pAct = dynamic_cast<QAction*>(sender());
     if (pAct != nullptr)
@@ -1821,12 +1817,6 @@ void CCNotePad::onPlugWorkV2(bool check)
 
         if (pMainCallBack != NULL)
         {
-            std::function<QsciScintilla* ()> foundCallBack = std::bind(&CCNotePad::getCurEditView, this);
-            Actor* actor = new Actor;
-
-            actor->registerFunction([this](QString name, int num){openFile(name,num);});
-
-            processor->registerActor("openFile",actor);
             pMainCallBack(this, plugPath, processor, nullptr);
         }
         else
@@ -1859,10 +1849,9 @@ void CCNotePad::sendParaToPlugin(NDD_PROC_DATA& procData)
 		}
 }
 
-
+//把插件需要的参数，传递到插件中去
 void CCNotePad::sendParaToPluginV2(NDD_PROC_DATA& procData)
 {
-        qDebug() <<"test5";
         QString plugPath = procData.m_strFilePath;
 
         QLibrary* pLib = new QLibrary(plugPath);
@@ -1872,11 +1861,6 @@ void CCNotePad::sendParaToPluginV2(NDD_PROC_DATA& procData)
 
         if (pMainCallBack != NULL)
         {
-            Actor* actor = new Actor;
-
-            actor->registerFunction([this](QString name, int num){openFile(name,num);});
-
-            processor->registerActor("openFile",actor);
             pMainCallBack(this, plugPath, processor, &procData);
         }
         else
@@ -3329,7 +3313,18 @@ void CCNotePad::initToolBar()
 	closeX->setToolTip(tr("Close"));
 	ui.mainToolBar->addWidget(closeX);
 
-	syncBlankShowStatus();
+    syncBlankShowStatus();
+}
+
+void CCNotePad::initActor()
+{
+    Actor* actor = new Actor;
+    actor->registerFunction([this](QString name, int num){openFile(name,num);});
+    processor->registerActor("openFile",actor);
+
+    Actor* actor1 = new Actor;
+    actor1->registerFunction([this]()->QsciScintilla*{return getCurEditView();});
+    processor->registerActor("getCurEditView",actor1);
 }
 
 void CCNotePad::setZoomLabelValue(int zoomValue)

@@ -374,6 +374,8 @@ private:
 	void setShoctIcon(int iconSize=24);
 	void initToolBar();
 
+    void initActor();
+
 	void setTxtLexer(ScintillaEditView * pEdit);
 	void saveTabEdit(int tabIndex);
 	void saveReceneOpenFile();

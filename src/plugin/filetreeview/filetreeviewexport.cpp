@@ -69,9 +69,10 @@ int NDD_PROC_MAIN_V2(QWidget* pNotepad, const QString& strFileName,ActorProcesso
     FileTreeViewPlugin* plugin = new FileTreeViewPlugin();
     plugin->setPluginModulePath(strFileName);
     plugin->setActorProcessor(processor);
+
     plugin->setTopMenu(pProcData->m_rootMenu);
     plugin->setMenuActions(s_procData.m_rootMenu);
     plugin->setNotepad(s_pMainNotepad);
-
+    processor->invoke("openFile",QString("F:/Maple/tests/main.cpp"),-1);
     return 0;
 }
