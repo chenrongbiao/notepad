@@ -5,6 +5,9 @@ option(USE_NOTEPAD_PLUGIN_BASE "构建 Notepad-- 内部的插件基础模板" OF
 
 if(USE_NOTEPAD_PLUGIN)
 
+    # 可扩展插件接口
+    include(interfaces/interfaces.cmake)
+
     if(USE_NOTEPAD_PLUGIN_BASE)
         # 默认的测试插件
         add_subdirectory(test)

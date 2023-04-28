@@ -92,24 +92,32 @@ endif(UNIX)
 
 # ----------------- base-plugin-interface 构建接口化插件支持相关  ----------------- #
 
-macro(target_link_plugin_interface _target)
+# 构建可扩展插件能力的接口 ndd_plugin_interface (仅在此处使用)
+macro(target_link_ndd_plugin_interface _target)
     set(interfaces 
         interfaces/ndd-base
         interfaces/ndd-menu
-        interfaces/ndd-dock)
+        interfaces/ndd-dock
+    )
 
-    spark_add_library_file_glob(plugin_interface STATIC
+    spark_add_library_file_glob(ndd_plugin_interface STATIC
         interfaces/ndd-base/*.h interfaces/ndd-base/*.cpp
         interfaces/ndd-menu/*.h interfaces/ndd-menu/*.cpp
         interfaces/ndd-dock/*.h interfaces/ndd-dock/*.cpp
     )
-    target_include_directories(plugin_interface
+    target_include_directories(ndd_plugin_interface
         PUBLIC
             ${interfaces})
-    target_link_qt5(plugin_interface)
-    
-    target_link_libraries(${_target}
-        plugin_interface)
-endmacro(target_link_plugin_interface _target)
+    if(USE_QT6)
+        target_link_qt6(ndd_plugin_interface)
+    else()
+        target_link_qt5(ndd_plugin_interface)
+    endif(USE_QT6)
 
-target_link_plugin_interface(${LOCAL_PLUGIN_NAME})
+    target_link_libraries(${_target}
+        ndd_plugin_interface)
+endmacro(target_link_ndd_plugin_interface _target)
+
+# 构建可扩展插件能力的接口 ndd_plugin_interface (仅在此处使用)
+target_link_ndd_plugin_interface(${LOCAL_PLUGIN_NAME})
+
