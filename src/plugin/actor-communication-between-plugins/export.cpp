@@ -6,8 +6,9 @@
 #include <QAction>
 #include <QDebug>
 
-#include "filetreeviewplugin.h"
 #include "actorprocessor.h"
+#include "plugin.h"
+
 #define NDD_EXPORTDLL
 
 #if defined(Q_OS_WIN)
@@ -42,8 +43,8 @@ bool NDD_PROC_IDENTIFY(NDD_PROC_DATA* pProcData)
     {
         return false;
     }
-    pProcData->m_strPlugName = QObject::tr("File Tree");
-    pProcData->m_strComment = QObject::tr("file tree plugin");
+    pProcData->m_strPlugName = QObject::tr("between-plugin");
+    pProcData->m_strComment = QObject::tr("test");
 
     pProcData->m_version = QString("1.0");
     pProcData->m_auther = QString("matheuter@gmail.com");
@@ -52,6 +53,7 @@ bool NDD_PROC_IDENTIFY(NDD_PROC_DATA* pProcData)
     return true;
 }
 
+//测试插件之间通信
 int NDD_PROC_MAIN_V2(QWidget* pNotepad, const QString& strFileName,ActorProcessor* processor,NDD_PROC_DATA* pProcData)
 {
     //务必拷贝一份pProcData，在外面会释放。
@@ -65,13 +67,11 @@ int NDD_PROC_MAIN_V2(QWidget* pNotepad, const QString& strFileName,ActorProcesso
     }
 
     s_pMainNotepad = pNotepad;
-    FileTreeViewPlugin* plugin = new FileTreeViewPlugin();
-    plugin->setPluginModulePath(strFileName);
-    plugin->setActorProcessor(processor);
 
+    Plugin * plugin = new Plugin();
+
+    plugin->setActorProcessor(processor);
     plugin->setTopMenu(pProcData->m_rootMenu);
-    plugin->setMenuActions(s_procData.m_rootMenu);
-    plugin->setNotepad(s_pMainNotepad);
-    processor->invoke("openFile",QString("F:/Maple/tests/main.cpp"),-1);
+
     return 0;
 }

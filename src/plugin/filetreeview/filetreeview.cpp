@@ -185,6 +185,10 @@ void FileTreeView::slotDoubleCliecked(const QModelIndex &index)
     }
     else {
         d->m_processor->invoke("openFile",model->nodeFromIndex(index)->getNodePath(),-1);
+        int a = 0;
+        int b = 2;
+        int re = d->m_processor->invoke<int>("add",a,b);
+        qDebug() << re;
     }
 }
 
