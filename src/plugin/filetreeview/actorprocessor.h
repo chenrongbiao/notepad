@@ -26,10 +26,10 @@ public:
     }
 
     template<typename R, typename ... Args>
-    R invoke(const std::string& route,Args&& ...args) const
+    R invoke(const std::string& route,Args&& ...args) const noexcept
     {
         if (m_actorMap->find(route) != m_actorMap->end()){
-            return (*m_actorMap)[route]->invoke<R>(std::forward<Args>(args)...);
+            return (*m_actorMap)[route]->invoke<R,Args...>(std::forward<Args>(args)...);
         }
         return NULL;
     }

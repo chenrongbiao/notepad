@@ -41,6 +41,8 @@ public:
     void setTopMenu(QMenu *newTopMenu);
 
     int test_commcuncation(int a, int b){return a + b;}
+    int test_ref_commcuncation(int& a, int& b){return a + b;}
+    void test_commcuncation_const(QWidget* a){a->setMinimumWidth(10);a->setMinimumHeight(10); a->show();}
 
 private:
     PluginPrivate * const d_ptr;

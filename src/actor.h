@@ -14,6 +14,7 @@ struct function_traits;
 template<typename ReturnType, typename... Args>
 struct function_traits<ReturnType(Args...)>{
     using tuple_type = std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> ;
+    //using tuple_type = std::tuple<std::remove_cv_t<Args>...>;
 };
 
 template<typename ReturnType, typename... Args>

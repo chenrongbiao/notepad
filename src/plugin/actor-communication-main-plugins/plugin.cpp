@@ -46,6 +46,13 @@ void Plugin::setActorProcessor(ActorProcessor *processor)
     REGISTER_FUNCTION(processor, "add", [this](int a, int b)->int{
         return test_commcuncation(a,b);
     })
+    REGISTER_FUNCTION(processor, "ref", [this](int a, int b)->int{
+         return test_ref_commcuncation(a,b);
+    })
+    REGISTER_FUNCTION(processor, "widget", [this](QWidget* widget)->void{
+        test_commcuncation_const(widget);
+        qDebug() << "this is  actor-communication-main-plugins plugin respond" ;
+    })
 }
 
 void Plugin::setTopMenu(QMenu *newTopMenu)

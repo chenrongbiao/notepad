@@ -58,11 +58,28 @@ void Plugin::setTopMenu(QMenu *newTopMenu)
 void Plugin::slotTestPluginCommuncation()
 {
     Q_D(Plugin);
+
+    //测试接口另一个插件曝露的接口
     int a = 2;
     int b = 1;
     int c = d->m_processor->invoke<int>("add",a,b);
     qDebug() << "this is from actor-communication-main-plugins interfece , call by actor-communication-between-plugins" ;
     qDebug() << a << "+" << b << "=" << c;
+
+    //测试右值
+    c = d->m_processor->invoke<int,int,int>("add",1,2);
+    qDebug() << "test lvalue" ;
+    qDebug() << 1 << "+" << 2 << "=" << c;
+
+    //测试一个插件向另一个插件曝露接口
+    QWidget * widget = new QWidget;
+    d->m_processor->invoke("widget",widget);
+    qDebug() << "test self-type" ;
+
+    //测试获取接口返回值
+    QsciScintilla* edit = d->m_processor->invoke<QsciScintilla*>("getCurrentEdit");
+    qDebug() << "test get return value" ;
+
 }
 
 void Plugin::setNotepad(QWidget *newNotepad)

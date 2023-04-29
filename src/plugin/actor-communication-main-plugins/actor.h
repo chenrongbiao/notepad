@@ -13,7 +13,8 @@ struct function_traits;
 
 template<typename ReturnType, typename... Args>
 struct function_traits<ReturnType(Args...)>{
-    using tuple_type = std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> ;
+    //using tuple_type = std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> ;
+    using tuple_type = std::tuple<Args...>;
 };
 
 template<typename ReturnType, typename... Args>
@@ -43,6 +44,39 @@ struct function_traits<ReturnType(ClassType::*)(Args...) const volatile>
 template<typename Callable>
 struct function_traits
     : function_traits<decltype(&Callable::operator())> {};
+
+
+template<typename Function>
+struct invoker
+{
+    static inline void apply(const Function& func, void* bl, void* result)
+    {
+        using tuple_type = typename function_traits<Function>::tuple_type;
+        const tuple_type* tp = static_cast<tuple_type*>(bl);
+        call(func, *tp, result);
+    }
+
+    template<typename F, typename ... Args>
+    static typename std::enable_if<std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
+    call(const F& f, const std::tuple<Args...>& tp, void*)
+    {
+        call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
+    }
+
+    template<typename F, typename ... Args>
+    static typename std::enable_if<!std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
+    call(const F& f, const std::tuple<Args...>& tp, void* result)
+    {
+        auto r = call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
+        *(decltype(r)*)result = r;
+    }
+
+    template<typename F, size_t... I, typename ... Args>
+    static auto call_helper(const F& f, const std::index_sequence<I...>& h, const std::tuple<Args...>& tup)
+    {
+        return f(std::get<I>(tup)...);
+    }
+};
 
 class Actor : public std::enable_shared_from_this<Actor>
 {
@@ -84,40 +118,6 @@ public:
         m_invokeFunctionWapper(&args_tuple, &return_value);
         return return_value;
     }
-
-public:
-
-    template<typename Function>
-    struct invoker
-    {
-        static inline void apply(const Function& func, void* bl, void* result)
-        {
-            using tuple_type = typename function_traits<Function>::tuple_type;
-            const tuple_type* tp = static_cast<tuple_type*>(bl);
-            call(func, *tp, result);
-        }
-
-        template<typename F, typename ... Args>
-        static typename std::enable_if<std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
-        call(const F& f, const std::tuple<Args...>& tp, void*)
-        {
-            call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
-        }
-
-        template<typename F, typename ... Args>
-        static typename std::enable_if<!std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
-        call(const F& f, const std::tuple<Args...>& tp, void* result)
-        {
-            auto r = call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
-            *(decltype(r)*)result = r;
-        }
-
-        template<typename F, size_t... I, typename ... Args>
-        static auto call_helper(const F& f, const std::index_sequence<I...>& h, const std::tuple<Args...>& tup)
-        {
-            return f(std::get<I>(tup)...);
-        }
-    };
 private:
     /**
     * @note m_invokeFunctions is an anonymous lamba expression that encapsulates a function
@@ -126,9 +126,11 @@ private:
     FunctionWapper m_invokeFunctionWapper;
 };
 
-#define REGISTER_FUNCTION(processor,identify, function)                  \
-    Actor* actor = new Actor();                                          \
-    actor->registerFunction(##function);                                 \
-    ##processor->registerActor(##identify, actor);
+#define REGISTER_FUNCTION(processor,identify, function)             \
+do {                                                                \
+    Actor* actor = new Actor();                                     \
+    actor->registerFunction(##function);                            \
+    ##processor->registerActor(##identify, actor);                  \
+}while(0);
 
 #endif

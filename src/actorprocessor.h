@@ -30,7 +30,7 @@ public:
     R invoke(const std::string& route,Args&& ...args) const
     {
         if (m_actorMap->find(route) != m_actorMap->end()){
-            return (*m_actorMap)[route]->invoke<R>(std::forward<Args>(args)...);
+            return (*m_actorMap)[route]->invoke<R,Args...>(std::forward<Args>(args)...);
         }
         return nullptr;
     }

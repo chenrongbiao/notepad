@@ -32,9 +32,8 @@ if(USE_NOTEPAD_PLUGIN)
         add_subdirectory(linux-terminal-plugin)
     endif(UNIX AND NOT APPLE)
     
-    add_subdirectory(filetreeview)
+#    add_subdirectory(filetreeview)
     add_subdirectory(actor-communication-main-plugins)
     add_subdirectory(actor-communication-between-plugins)
-    add_subdirectory(actor-communication-example)
 
 endif(USE_NOTEPAD_PLUGIN)
