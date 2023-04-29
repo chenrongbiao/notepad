@@ -3318,13 +3318,13 @@ void CCNotePad::initToolBar()
 
 void CCNotePad::initActor()
 {
-    Actor* actor = new Actor;
-    actor->registerFunction([this](QString name, int num){openFile(name,num);});
-    processor->registerActor("openFile",actor);
+    REGISTER_FUNCTION(processor,"openFile", [this](QString name, int num){
+        openFile(name,num);
+    })
 
-    Actor* actor1 = new Actor;
-    actor1->registerFunction([this]()->QsciScintilla*{return getCurEditView();});
-    processor->registerActor("getCurEditView",actor1);
+    REGISTER_FUNCTION(processor,"getCurEditView", [this]()->QsciScintilla*{
+        return getCurEditView();
+    })
 }
 
 void CCNotePad::setZoomLabelValue(int zoomValue)

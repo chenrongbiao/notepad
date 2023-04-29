@@ -13,7 +13,6 @@ struct function_traits;
 
 template<typename ReturnType, typename... Args>
 struct function_traits<ReturnType(Args...)>{
-    //using tuple_type = std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> ;
     using tuple_type = std::tuple<Args...>;
 };
 
@@ -44,7 +43,6 @@ struct function_traits<ReturnType(ClassType::*)(Args...) const volatile>
 template<typename Callable>
 struct function_traits
     : function_traits<decltype(&Callable::operator())> {};
-
 
 template<typename Function>
 struct invoker
@@ -127,8 +125,8 @@ private:
 };
 
 #define REGISTER_FUNCTION(processor,identify, function)                  \
-    Actor* ##identifyactor = new Actor();                                          \
+    Actor* ##identifyactor = new Actor();                                \
     actor->registerFunction(##function);                                 \
-    ##processor->registerActor(##identify, ##identifyactor);
+    (##processor)->registerActor(##identify, ##identifyactor);
 
 #endif

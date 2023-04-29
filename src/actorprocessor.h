@@ -6,7 +6,6 @@
 #include <map>
 #include <iostream>
 #include <unordered_map>
-#include <QDebug>
 #include "actor.h"
 
 class  ActorProcessor
