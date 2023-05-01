@@ -31,7 +31,7 @@ public:
         if (m_actorMap->find(route) != m_actorMap->end()){
             return (*m_actorMap)[route]->invoke<R,Args...>(std::forward<Args>(args)...);
         }
-        return nullptr;
+        return NULL;
     }
 
     void registerActor(const std::string& route, Actor*actor);

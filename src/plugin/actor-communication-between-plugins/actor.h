@@ -86,18 +86,12 @@ public:
     Actor(){}
     ~Actor(){}
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename Function>
     void registerFunction(Function&& function_any) noexcept
     {
         m_invokeFunctionWapper =  { std::bind(&invoker<Function>::apply, function_any,  std::placeholders::_1, std::placeholders::_2) };
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename ... Args>
     void invoke(Args&& ... args) const noexcept
     {
@@ -105,9 +99,6 @@ public:
         m_invokeFunctionWapper(&args_tuple, nullptr);
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename R, typename ... Args>
     R invoke(Args&& ...args) const
     {
