@@ -3695,6 +3695,10 @@ void  CCNotePad::slot_LineNumIndexChange(int line, int index)
 		break;
 	}
 	m_lineNumLabel->setText(lineNums);
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->cursorChanged(line);
+	}
 }
 
 //打开监控文件修改的信号
@@ -5313,7 +5317,6 @@ void CCNotePad::slot_actionOpenFile_toggle(bool /*checked*/)
 	{
 		QStringList fileNameList = fd.selectedFiles();      //返回文件列表的名称
 		QFileInfo fi(fileNameList[0]);
-
 		openFile(fi.filePath());
 
 	}
