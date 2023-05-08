@@ -147,5 +147,7 @@
         <file>qss/common.qss</file>
         <file>notepad/tailf.png</file>
         <file>Resources/edit/styledeepblue/tailf.png</file>
+        <file>notepad/funcList_leaf.png</file>
+        <file>notepad/funcList_node.png</file>
     </qresource>
 </RCC>

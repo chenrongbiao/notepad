@@ -27,6 +27,7 @@
 #include "shortcutkeymgr.h"
 #include "md5hash.h"
 #include "CmpareMode.h"
+#include "functionlistview.h"
 
 #ifdef NO_PLUGIN
 #include "pluginmgr.h"
@@ -404,7 +405,6 @@ const char *TabNoNeedSaveDark32 = ":/Resources/edit/global/noneedsavedark.png";
 const char *TabNeedSaveDark32 = ":/notepad/needsave.png";
 const char *TabNoNeedSaveDark32 = ":/notepad/noneedsave.png";
 
-
 #ifdef STYLE_NOTEPAD
 const char* NewFileIcon = ":/notepad/newFile.png";
 const char* OpenFileIcon = ":/notepad/openFile.png";
@@ -502,6 +502,7 @@ FileExtLexer s_fileExtMapLexerId[FileExtMapLexerIdLen] = {
 {QString("v"), L_VERILOG},
 {QString("rs"), L_RUST},
 {QString("frm"), L_VB},
+{QString("patch"), L_DIFF},
 {QString("NULL"), L_EXTERNAL},
 };
 
@@ -1092,7 +1093,7 @@ CCNotePad::CCNotePad(bool isMainWindows, QWidget *parent)
 	: QMainWindow(parent), m_cutFile(nullptr),m_copyFile(nullptr), m_dockSelectTreeWin(nullptr), \
 	m_pResultWin(nullptr),m_isQuitCancel(false), m_tabRightClickMenu(nullptr), m_shareMem(nullptr),m_isMainWindows(isMainWindows),\
 	m_openInNewWinAct(nullptr), m_showFileDirAct(nullptr), m_showCmdAct(nullptr), m_timerAutoSave(nullptr), m_curColorIndex(-1), \
-	m_fileListView(nullptr), m_isInReloadFile(false), m_isToolMenuLoaded(false), m_isRecentFileLoaded(false)
+	m_fileListView(nullptr), m_isInReloadFile(false), m_isToolMenuLoaded(false), m_isRecentFileLoaded(false),m_functionListView(nullptr)
 {
 	ui.setupUi(this);
 
@@ -1340,6 +1341,11 @@ void CCNotePad::quickshow()
 	init_toolsMenu();
 
 	this->setContextMenuPolicy(Qt::NoContextMenu);
+
+	if (1 == NddSetting::getKeyValueFromNumSets(FUNCTIONLISTSHOW))
+	{
+		initFunctionListDocWin();
+	}
 	
 	//恢复文件列表
 	if (1 == NddSetting::getKeyValueFromNumSets(FILELISTSHOW))
@@ -2694,7 +2700,10 @@ void CCNotePad::slot_tabCurrentChanged(int index)
 			fileListSetCurItem(filePath);
 			}
 			}
-		}
+	if (!m_dockFunctionListWin.isNull()) {
+		m_functionListView->showFunctionList();
+	}
+}
 
 //快捷按钮的初始化
 void CCNotePad::setShoctIcon(int iconSize)
@@ -3686,6 +3695,10 @@ void  CCNotePad::slot_LineNumIndexChange(int line, int index)
 		break;
 	}
 	m_lineNumLabel->setText(lineNums);
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->cursorChanged(line);
+	}
 }
 
 //打开监控文件修改的信号
@@ -4396,6 +4409,11 @@ bool CCNotePad::openSuperBigTextFile(QString filePath)
 
 	addFileListView(filePath, pEdit);
 
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->showFunctionList();
+	}
+
 	return true;
 }
 
@@ -4668,6 +4686,11 @@ void CCNotePad::setNormalTextEditInitPro(ScintillaEditView* pEdit, QString fileP
 	}
 
 	addFileListView(filePath, pEdit);
+
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->showFunctionList();
+	}
 }
 
 //显示二进制文件
@@ -4988,6 +5011,19 @@ void CCNotePad::slot_fileListView(bool check)
 	}
 }
 
+void CCNotePad::slot_functionListView(bool check) {
+	if (check) {
+		initFunctionListDocWin();
+		m_functionListView->showFunctionList();
+	}
+	else {
+		if (!m_dockFunctionListWin.isNull())
+		{
+			m_dockFunctionListWin->close();
+		}
+	}
+}
+
 
 void CCNotePad::addFileListView(QString file, QWidget* pw)
 {
@@ -5050,6 +5086,53 @@ bool  CCNotePad::closeFileByEditWidget(QWidget* pEdit)
 		return true;
 	}
 	return false;
+}
+
+void CCNotePad::initFunctionListDocWin() {
+	//停靠窗口1
+	if (m_dockFunctionListWin.isNull())
+	{
+		m_dockFunctionListWin = new QDockWidget(tr("Function List"), this);
+		connect(m_dockFunctionListWin, &QDockWidget::dockLocationChanged, this, [](Qt::DockWidgetArea area) {
+			NddSetting::updataKeyValueFromNumSets(FUNCTIONLISTPOS, area);
+			});
+
+		connect(m_dockFunctionListWin, &QObject::destroyed, this, [this] {
+			if (ui.actionFunctionList->isChecked())
+			{
+				ui.actionFunctionList->setChecked(false);
+			}
+			});
+		m_dockFunctionListWin->setAttribute(Qt::WA_DeleteOnClose);
+		m_dockFunctionListWin->layout()->setMargin(0);
+		m_dockFunctionListWin->layout()->setSpacing(0);
+
+		//暂时不提供关闭，因为关闭后需要同步菜单的check状态
+
+		m_dockFunctionListWin->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+		m_dockFunctionListWin->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+		m_functionListView = new FunctionListView(m_dockFunctionListWin);
+		m_functionListView->setNotepadWin(this);
+
+		//connect(m_functionListView, &FunctionListView::itemDoubleClicked, this, &CCNotePad::slot_fileListItemDoubleClick);
+
+		m_dockFunctionListWin->setWidget(m_functionListView);
+
+		int lastArea = NddSetting::getKeyValueFromNumSets(FUNCTIONLISTPOS);
+		if (lastArea == 0)
+		{
+			lastArea = Qt::LeftDockWidgetArea;
+		}
+
+		addDockWidget((Qt::DockWidgetArea)lastArea, m_dockFunctionListWin);
+
+		if (!ui.actionFunctionList->isChecked())
+		{
+			ui.actionFunctionList->setChecked(true);
+		}
+	}
+	m_dockFunctionListWin->show();
 }
 
 void  CCNotePad::initFileListDockWin()
@@ -5206,6 +5289,10 @@ bool CCNotePad::openFile(QString filePath, int lineNum)
 			pEdit->execute(SCI_GOTOLINE, lineNum-1);
 	}
 	}
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->showFunctionList();
+	}
 	return ret;
 }
 
@@ -5230,7 +5317,6 @@ void CCNotePad::slot_actionOpenFile_toggle(bool /*checked*/)
 	{
 		QStringList fileNameList = fd.selectedFiles();      //返回文件列表的名称
 		QFileInfo fi(fileNameList[0]);
-
 		openFile(fi.filePath());
 
 	}
@@ -5407,6 +5493,10 @@ bool  CCNotePad::saveFile(QString fileName, ScintillaEditView* pEdit, bool isBak
 			QFile::remove(swapFilePath);
 	}
 		
+	}
+	if (!m_dockFunctionListWin.isNull())
+	{
+		m_functionListView->showFunctionList();
 	}
 	return true;
 }
@@ -5928,7 +6018,7 @@ void CCNotePad::slot_timerAutoSave()
 //5和3一样，但是多了一个语法设置保存。
 //20230119 对于1非脏的新建文件，不再保存。
 void CCNotePad::saveTempFile(ScintillaEditView* pEdit,int index, QSettings& qs)
-{
+{ 
 	//16进制的处理逻辑
 	if (TXT_TYPE != getDocTypeProperty(pEdit))
 	{
@@ -6169,6 +6259,15 @@ void CCNotePad::closeEvent(QCloseEvent * event)
 		m_columnEditWin.data()->close();
 	}
 	
+	if (!m_dockFunctionListWin.isNull())
+	{
+		NddSetting::updataKeyValueFromNumSets(FUNCTIONLISTSHOW, 1);
+		m_dockFunctionListWin.data()->close();
+	}
+	else
+	{
+		NddSetting::updataKeyValueFromNumSets(FUNCTIONLISTSHOW, 0);
+	}
 
 	//关闭的时候，filelistwin还存在
 	if (!m_dockFileListWin.isNull())
@@ -9612,4 +9711,19 @@ void CCNotePad::on_md5hash()
 	pWin->setWindowFlag(Qt::Window);
 	pWin->setAttribute(Qt::WA_DeleteOnClose);
 	pWin->show();
+}
+
+QString CCNotePad::currentTabLabel()
+{
+	return ui.editTabWidget->tabText(ui.editTabWidget->currentIndex());
+}
+
+QString CCNotePad::currentTabFilePath()
+{
+	if (ui.editTabWidget->currentWidget() != nullptr)
+	{
+		QString filePath = getFilePathProperty(ui.editTabWidget->currentWidget());
+		return filePath;
+	}
+	return nullptr;
 }

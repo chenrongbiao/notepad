@@ -343,6 +343,11 @@
         <translation type="unfinished">显示符号</translation>
     </message>
     <message>
+        <source>Function List</source>
+        <translation type="unfinished">函数列表</translation>
+    </message>
+
+    <message>
         <source>Encoding</source>
         <translation type="obsolete">编码</translation>
     </message>
@@ -881,8 +886,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="cceditor/ccnotepad.ui" line="1531"/>
-        <location filename="ui_ccnotepad.h" line="1508"/>
         <source>Search Result</source>
         <translation type="unfinished">查找结果</translation>
     </message>
