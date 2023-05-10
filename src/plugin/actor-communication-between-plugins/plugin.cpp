@@ -62,7 +62,7 @@ void Plugin::slotTestPluginCommuncation()
     //测试接口另一个插件曝露的接口
     int a = 2;
     int b = 1;
-    int c = d->m_processor->invoke<int>("add",a,b);
+    int c = d->m_processor->invoke<int,int,int>("add",a,b);
     qDebug() << "this is from actor-communication-main-plugins interfece , call by actor-communication-between-plugins" ;
     qDebug() << a << "+" << b << "=" << c;
 

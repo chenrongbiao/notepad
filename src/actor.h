@@ -1,4 +1,4 @@
-﻿#ifndef _ACTOR_H_
+#ifndef _ACTOR_H_
 #define _ACTOR_H_
 
 #include <cstdint>
@@ -12,9 +12,27 @@ template<typename T>
 struct function_traits;
 
 template<typename ReturnType, typename... Args>
-struct function_traits<ReturnType(Args...)>{
-    //using tuple_type = std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> ;
-    using tuple_type = std::tuple<Args...>;
+struct function_traits<ReturnType(Args...)>
+{
+    // arity is the number of arguments.
+    enum {
+        value = sizeof...(Args)
+    };
+    // arg_types is a list of the types of the arguments.
+    using tuple_type =std::tuple<typename std::decay<Args>::type...>;
+
+    template<std::size_t N, typename = typename std::enable_if<(N < value)>::type>
+    using args = typename std::tuple_element<N, std::tuple<Args...>>;
+
+    // the return type of the function.
+    using return_type = ReturnType;
+
+    template <std::size_t N>
+    struct arguments
+    {
+        static_assert(N < value, "[error]:invalid parameter index.");
+        using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
+    };
 };
 
 template<typename ReturnType, typename... Args>
@@ -45,10 +63,38 @@ template<typename Callable>
 struct function_traits
     : function_traits<decltype(&Callable::operator())> {};
 
-
-template<typename Function>
 struct invoker
 {
+    template<typename Function, typename ThisType>
+    static inline void apply(const Function& func, ThisType* thisType, void* bl, void* result)
+    {
+        using tuple_type = typename function_traits<Function>::tuple_type;
+        const tuple_type* tp = static_cast<tuple_type*>(bl);
+        call(func,thisType,*tp, result);
+    }
+
+    template<typename Function,typename ThisType, typename ... Args>
+    static typename std::enable_if<std::is_void<typename function_traits<Function>::return_type>::value>::type
+    call(const Function& f,ThisType* thisType, const std::tuple<Args...>& tp, void*)
+    {
+        call_helper(f, thisType, std::make_index_sequence<sizeof... (Args)>{}, tp);
+    }
+
+    template<typename Function,typename ThisType, typename ... Args>
+        static typename std::enable_if<!std::is_void<typename function_traits<Function>::return_type>::value>::type
+    call(const Function& f, ThisType * thisType,const std::tuple<Args...>& tp, void* result)
+    {
+        auto r = call_helper(f, thisType, std::make_index_sequence<sizeof... (Args)>{}, tp);
+        *(decltype(r)*)result = r;
+    }
+
+    template<typename Function,typename ThisType, size_t... I, typename ... Args>
+    static auto call_helper(const Function& f,ThisType* thisType, const std::index_sequence<I...>& h, const std::tuple<Args...>& tup)
+    {
+        return (thisType->*f)(std::get<I>(tup)...);
+    }
+
+    template<typename Function>
     static inline void apply(const Function& func, void* bl, void* result)
     {
         using tuple_type = typename function_traits<Function>::tuple_type;
@@ -56,23 +102,23 @@ struct invoker
         call(func, *tp, result);
     }
 
-    template<typename F, typename ... Args>
-    static typename std::enable_if<std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
-    call(const F& f, const std::tuple<Args...>& tp, void*)
+    template<typename Function, typename ... Args>
+    static typename std::enable_if<std::is_void<typename function_traits<Function>::return_type>::value>::type
+    call(const Function& f, const std::tuple<Args...>& tp, void*)
     {
         call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
     }
 
-    template<typename F, typename ... Args>
-    static typename std::enable_if<!std::is_void<typename std::result_of<F(Args...)>::type>::value>::type
-    call(const F& f, const std::tuple<Args...>& tp, void* result)
+    template<typename Function, typename ... Args>
+    static typename std::enable_if<!std::is_void<typename function_traits<Function>::return_type>::value>::type
+    call(const Function& f, const std::tuple<Args...>& tp, void* result)
     {
         auto r = call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
         *(decltype(r)*)result = r;
     }
 
-    template<typename F, size_t... I, typename ... Args>
-    static auto call_helper(const F& f, const std::index_sequence<I...>& h, const std::tuple<Args...>& tup)
+    template<typename Function, size_t... I, typename ... Args>
+    static auto call_helper(const Function& f, const std::index_sequence<I...>& h, const std::tuple<Args...>& tup)
     {
         return f(std::get<I>(tup)...);
     }
@@ -88,41 +134,34 @@ public:
     Actor(){}
     ~Actor(){}
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename Function>
-    void registerFunction(Function&& function_any) noexcept
+    void registerFunction(Function function_any) noexcept
     {
-        m_invokeFunctionWapper =  { std::bind(&invoker<Function>::apply, function_any,  std::placeholders::_1, std::placeholders::_2) };
+        m_invokeFunctionWapper =  { std::bind(&invoker::apply<Function>, function_any,  std::placeholders::_1, std::placeholders::_2) };
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
+    template<typename Function, typename ThisType>
+    void registerFunction(Function function, ThisType* p) noexcept
+    {
+        m_invokeFunctionWapper =  { std::bind(&invoker::apply<Function,ThisType>, function, p,  std::placeholders::_1, std::placeholders::_2) };
+    }
+
     template<typename ... Args>
-    void invoke(Args&& ... args) const noexcept
+    void invoke(Args ...args) const noexcept
     {
         auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
         m_invokeFunctionWapper(&args_tuple, nullptr);
     }
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
     template<typename R, typename ... Args>
-    R invoke(Args&& ...args) const
+    R invoke(Args ...args) const
     {
         auto args_tuple = std::make_tuple(std::forward<Args>(args)...);
-        R return_value;
-        m_invokeFunctionWapper(&args_tuple, &return_value);
-        return return_value;
+        R returnValue;
+        m_invokeFunctionWapper(&args_tuple, &returnValue);
+        return returnValue;
     }
 private:
-    /**
-    * @note m_invokeFunctions is an anonymous lamba expression that encapsulates a function
-    * Functions include Lamba expressions, member functions, funtor, ordinary functions, and function Pointers
-    */
     FunctionWapper m_invokeFunctionWapper;
 };
 

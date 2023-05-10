@@ -20,7 +20,7 @@ void ActorProcessor::registerActor(const std::string &route, Actor *actor)
     m_actorMap->insert(std::make_pair(route,actor));
 }
 
-void ActorProcessor::removeActor(const std::string &route)
+void ActorProcessor::unregisterActor(const std::string &route)
 {
     auto iter = (*m_actorMap).find(route);
     if(iter != m_actorMap->end())
@@ -30,25 +30,7 @@ void ActorProcessor::removeActor(const std::string &route)
     }
 }
 
-Actor *ActorProcessor::findActor(const std::string &route)
+ActorProcessor::StatusType ActorProcessor::processorStatus() const
 {
-    auto iter = (*m_actorMap).find(route);
-    if(iter != m_actorMap->end())
-    {
-        return (*m_actorMap)[route];
-    }
-    return nullptr;
-}
-
-
-bool ActorProcessor::resetActor(const std::string &route, Actor *actor)
-{
-    auto iter = (*m_actorMap).find(route);
-    if(iter != m_actorMap->end())
-    {
-        m_actorMap->erase(route);
-        delete iter->second;
-        return true;
-    }
-    return false;
+    return m_processorStatus;
 }

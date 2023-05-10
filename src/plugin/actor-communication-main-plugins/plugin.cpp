@@ -44,13 +44,10 @@ void Plugin::setActorProcessor(ActorProcessor *processor)
     Q_D(Plugin);
     d->m_processor = processor;
 
-    REGISTER_FUNCTION(processor, "add", [this](int a, int b)->int{
-        return test_commcuncation(a,b);
-    })
+    Actor* actor = new Actor();
+    actor->registerFunction(&Plugin::test_commcuncation,this);                            \
+    processor->registerActor("add",actor);
 
-    REGISTER_FUNCTION(processor, "add", [this](int a, int b)->int{
-            return test_commcuncation(a,b);
-    })
 
     REGISTER_FUNCTION(processor, "ref", [this](int a, int b)->int{
          return test_ref_commcuncation(a,b);

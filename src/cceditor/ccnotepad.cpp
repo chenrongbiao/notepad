@@ -3318,9 +3318,9 @@ void CCNotePad::initToolBar()
 
 void CCNotePad::initActor()
 {
-    REGISTER_FUNCTION(processor,"openFile", [this](QString name, int num){
-        openFile(name,num);
-    })
+    Actor* actor = new Actor();
+    actor->registerFunction(&CCNotePad::openFile,this);                            \
+    processor->registerActor("openFIle",actor);
 
     REGISTER_FUNCTION(processor,"getCurEditView", [this]()->QsciScintilla*{
         return getCurEditView();

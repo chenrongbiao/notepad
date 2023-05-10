@@ -13,36 +13,54 @@ class  ActorProcessor
 public:
     ActorProcessor();
     ~ActorProcessor();
-public:
 
-    /**
-    * @brief Register the callback function and construct the anonymous function with std::bind
-    */
-    template<typename ... Args>
-    void invoke(const std::string& route,Args&& ... args) const noexcept
+public:
+    using ActorMap          = std::unordered_map<std::string, Actor*>;
+
+    // processor exe result status
+    enum StatusType
     {
-        if (m_actorMap->find(route) != m_actorMap->end())
+        SUCESS,
+        FALL,
+        ERROR,
+        DEFAULT
+    };
+
+public:
+    template<typename ... Args>
+    void invoke(const std::string& route,Args ... args) const noexcept
+    {
+        if (m_actorMap->find(route) != m_actorMap->end()){
             (*m_actorMap)[route]->invoke(std::forward<Args>(args)...);
+            m_processorStatus = StatusType::SUCESS;
+        }
+        else{
+            m_processorStatus = StatusType::FALL;
+        }
     }
 
     template<typename R, typename ... Args>
-    R invoke(const std::string& route,Args&& ...args) const
+    R invoke(const std::string& route,Args ...args) const
     {
         if (m_actorMap->find(route) != m_actorMap->end()){
-            return (*m_actorMap)[route]->invoke<R,Args...>(std::forward<Args>(args)...);
+            m_processorStatus = StatusType::SUCESS;
+            return (*m_actorMap)[route]->invoke<R>(std::forward<Args>(args)...);
         }
-        return nullptr;
+        else{
+            m_processorStatus = StatusType::FALL;
+            return NULL;
+        }
     }
 
-    void registerActor(const std::string& route, Actor*actor);
+public:
+    void        registerActor(const std::string& route, Actor*actor);
+    void        unregisterActor(const std::string& route);
 
-    void removeActor(const std::string& route);
-    Actor* findActor(const std::string& route);
-    bool resetActor(const std::string& route,Actor*actor);
+    StatusType  processorStatus() const;
 
 private:
-    std::unordered_map<std::string, Actor*>* m_actorMap;
-
+    ActorMap*                 m_actorMap;
+    StatusType                m_processorStatus;
 private:
     ActorProcessor(ActorProcessor&&)=delete;
     ActorProcessor& operator=(const ActorProcessor&)=delete;
