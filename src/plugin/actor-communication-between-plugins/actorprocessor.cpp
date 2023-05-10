@@ -6,13 +6,22 @@ ActorProcessor::ActorProcessor():
 
 ActorProcessor::~ActorProcessor()
 {
-    for (auto& item : (*m_actorMap))
-    {
+    for (auto& item : (*m_actorMap)){
         if(item.second != nullptr)
             delete item.second;
     }
     if (m_actorMap)
         delete m_actorMap;
+}
+
+void ActorProcessor::set(const std::string &name, ActorProcessor *processor)
+{
+
+}
+
+ActorProcessor *ActorProcessor::get(const std::string &name) const
+{
+    return NULL;
 }
 
 void ActorProcessor::registerActor(const std::string &route, Actor *actor)

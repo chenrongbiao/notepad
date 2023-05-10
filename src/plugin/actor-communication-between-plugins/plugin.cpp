@@ -44,7 +44,6 @@ void Plugin::setActorProcessor(ActorProcessor *processor)
     d->m_processor = processor;
 }
 
-
 void Plugin::setTopMenu(QMenu *newTopMenu)
 {
     Q_D(Plugin);

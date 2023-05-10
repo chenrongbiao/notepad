@@ -44,7 +44,7 @@ public:
     {
         if (m_actorMap->find(route) != m_actorMap->end()){
             m_processorStatus = StatusType::SUCESS;
-            return (*m_actorMap)[route]->invoke<R>(std::forward<Args>(args)...);
+            return (*m_actorMap)[route]->invoke<R,Args...>(std::forward<Args>(args)...);
         }
         else{
             m_processorStatus = StatusType::FALL;

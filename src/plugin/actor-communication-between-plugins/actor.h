@@ -1,4 +1,4 @@
-#ifndef _ACTOR_H_
+﻿#ifndef _ACTOR_H_
 #define _ACTOR_H_
 
 #include <cstdint>
@@ -11,10 +11,11 @@
 template<typename T>
 struct function_traits;
 
+//函数萃取器，编译期萃取函数参数列表类型与返回值类型
 template<typename ReturnType, typename... Args>
 struct function_traits<ReturnType(Args...)>
 {
-    // arity is the number of arguments.
+    // 获取参数列表项个数
     enum {
         value = sizeof...(Args)
     };
@@ -24,7 +25,7 @@ struct function_traits<ReturnType(Args...)>
     template<std::size_t N, typename = typename std::enable_if<(N < value)>::type>
     using args = typename std::tuple_element<N, std::tuple<Args...>>;
 
-    // the return type of the function.
+    //  return type of the function.
     using return_type = ReturnType;
 
     template <std::size_t N>
@@ -35,6 +36,7 @@ struct function_traits<ReturnType(Args...)>
     };
 };
 
+//各种类型的函数萃取
 template<typename ReturnType, typename... Args>
 struct function_traits<ReturnType(*)(Args...)>
     : function_traits<ReturnType(Args...)> {};
@@ -65,6 +67,8 @@ struct function_traits
 
 struct invoker
 {
+    //@note 为了减少成员函数封装层数，单独实现了成员函数注册，其实可以统一走普通函数注册
+    //      只需要将成员函数封装成lamada表达式，就可以执行普通函数注册。
     template<typename Function, typename ThisType>
     static inline void apply(const Function& func, ThisType* thisType, void* bl, void* result)
     {
@@ -77,14 +81,14 @@ struct invoker
     static typename std::enable_if<std::is_void<typename function_traits<Function>::return_type>::value>::type
     call(const Function& f,ThisType* thisType, const std::tuple<Args...>& tp, void*)
     {
-        call_helper(f, thisType, std::make_index_sequence<sizeof... (Args)>{}, tp);
+        call_helper(f, thisType, std::make_index_sequence<function_traits<Function>::value>{}, tp);
     }
 
     template<typename Function,typename ThisType, typename ... Args>
         static typename std::enable_if<!std::is_void<typename function_traits<Function>::return_type>::value>::type
     call(const Function& f, ThisType * thisType,const std::tuple<Args...>& tp, void* result)
     {
-        auto r = call_helper(f, thisType, std::make_index_sequence<sizeof... (Args)>{}, tp);
+        auto r = call_helper(f, thisType, std::make_index_sequence<function_traits<Function>::value>{}, tp);
         *(decltype(r)*)result = r;
     }
 
@@ -94,6 +98,7 @@ struct invoker
         return (thisType->*f)(std::get<I>(tup)...);
     }
 
+    //普通函数
     template<typename Function>
     static inline void apply(const Function& func, void* bl, void* result)
     {
@@ -106,14 +111,14 @@ struct invoker
     static typename std::enable_if<std::is_void<typename function_traits<Function>::return_type>::value>::type
     call(const Function& f, const std::tuple<Args...>& tp, void*)
     {
-        call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
+        call_helper(f, std::make_index_sequence<function_traits<Function>::value>{}, tp);
     }
 
     template<typename Function, typename ... Args>
     static typename std::enable_if<!std::is_void<typename function_traits<Function>::return_type>::value>::type
     call(const Function& f, const std::tuple<Args...>& tp, void* result)
     {
-        auto r = call_helper(f, std::make_index_sequence<sizeof... (Args)>{}, tp);
+        auto r = call_helper(f, std::make_index_sequence<function_traits<Function>::value>{}, tp);
         *(decltype(r)*)result = r;
     }
 
@@ -165,6 +170,11 @@ private:
     FunctionWapper m_invokeFunctionWapper;
 };
 
+// 注册辅助宏
+// note: linux下由于gcc的原因，function仅支持不带括号的连续字符，windows没有限制
+// -processor 系统曝露的processor指针
+// -identify 唯一标识符
+// -function 要注册的函数
 #define REGISTER_FUNCTION(processor,identify, function)             \
 do {                                                                \
     Actor* actor = new Actor();                                     \
@@ -172,4 +182,14 @@ do {                                                                \
     ##processor->registerActor(##identify, actor);                  \
 }while(0);
 
+//注册辅助宏，注册成员函数
+// -processor 系统曝露的processor指针
+// -identify 唯一标识符
+// -function 要注册的函数
+#define REGISTER_METHOD_FUNCTION(processor,identify, function)     \
+do {                                                               \
+   Actor* actor = new Actor();                                     \
+   actor->registerFunction(&##function,this);                      \
+   ##processor->registerActor(##identify, actor);                  \
+}while(0);
 #endif
