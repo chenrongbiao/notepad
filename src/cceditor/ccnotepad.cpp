@@ -3305,7 +3305,6 @@ void CCNotePad::initToolBar()
 	space->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	ui.mainToolBar->addWidget(space);
 
-
 	QToolButton* closeX = new QToolButton(ui.mainToolBar);
 	connect(closeX, &QAbstractButton::clicked, this, &CCNotePad::slot_actionClose);
 	closeX->setFixedSize(ICON_SIZE, ICON_SIZE);
@@ -3318,13 +3317,11 @@ void CCNotePad::initToolBar()
 
 void CCNotePad::initActor()
 {
-    Actor* actor = new Actor();
-    actor->registerFunction(&CCNotePad::openFile,this);                            \
-    processor->registerActor("openFIle",actor);
+    REGISTER_METHOD_FUNCTION(processor, "org.system.openFile", &CCNotePad::openFile, this);
 
-    REGISTER_FUNCTION(processor,"getCurEditView", [this]()->QsciScintilla*{
+    REGISTER_FUNCTION(processor, "org.system.getCurEditView", [this]() -> QsciScintilla * {
         return getCurEditView();
-    })
+    });
 }
 
 void CCNotePad::setZoomLabelValue(int zoomValue)

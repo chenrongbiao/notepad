@@ -1,6 +1,8 @@
 ﻿
 option(USE_NOTEPAD_PLUGIN "构建 Notepad-- 内部插件" ON)
 option(USE_NOTEPAD_PLUGIN_BASE "构建 Notepad-- 内部的插件基础模板" OFF)
+option(USE_NOTEPAD_PLUGIN_ACTOR "test pluginv2" ON)
+option(USE_NOTEPAD_PLUGIN_FILETREE "file tree view" OFF)
 
 
 if(USE_NOTEPAD_PLUGIN)
@@ -19,21 +21,28 @@ if(USE_NOTEPAD_PLUGIN)
         add_subdirectory(template-plugins/base-secondary-menu-ui-plugin-v1)
     endif(USE_NOTEPAD_PLUGIN_BASE)
 
-#    # 一个简单的插件示例，但依赖于外部的 opencc 项目(基于 git)
-#    add_subdirectory(opencc-demo-plugin)
-#    # 一个简单的版本更新检查的插件
-#    add_subdirectory(versionUpdate)
-#    # 一个简单的可二次扩展的插件
-#    add_subdirectory(external-plugin)
+    if(USE_NOTEPAD_PLUGIN_OTHER)
+        # 一个简单的插件示例，但依赖于外部的 opencc 项目(基于 git)
+        add_subdirectory(opencc-demo-plugin)
+        # 一个简单的版本更新检查的插件
+        add_subdirectory(versionUpdate)
+        # 一个简单的可二次扩展的插件
+        add_subdirectory(external-plugin)
 
-    # Linux 可构建的插件
-    if(UNIX AND NOT APPLE)
-        # 一个简单的 Linux 终端插件，但依赖于外部的 lxqt-qterminal
-        add_subdirectory(linux-terminal-plugin)
-    endif(UNIX AND NOT APPLE)
-    
-#    add_subdirectory(filetreeview)
-    add_subdirectory(actor-communication-main-plugins)
-    add_subdirectory(actor-communication-between-plugins)
+        # Linux 可构建的插件
+        if(UNIX AND NOT APPLE)
+            # 一个简单的 Linux 终端插件，但依赖于外部的 lxqt-qterminal
+            add_subdirectory(linux-terminal-plugin)
+        endif(UNIX AND NOT APPLE)
+    endif(USE_NOTEPAD_PLUGIN_OTHER)
+
+    if(USE_NOTEPAD_PLUGIN_FILETREE)
+        add_subdirectory(filetreeview)
+    endif(USE_NOTEPAD_PLUGIN_FILETREE)
+
+    if(USE_NOTEPAD_PLUGIN_ACTOR)
+        add_subdirectory(actor-communication-one)
+        add_subdirectory(actor-communication-two)
+    endif(USE_NOTEPAD_PLUGIN_ACTOR)
 
 endif(USE_NOTEPAD_PLUGIN)

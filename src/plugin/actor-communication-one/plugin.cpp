@@ -44,19 +44,23 @@ void Plugin::setActorProcessor(ActorProcessor *processor)
     Q_D(Plugin);
     d->m_processor = processor;
 
-    Actor* actor = new Actor();
-    actor->registerFunction(&Plugin::test_commcuncation,this);                            \
-    processor->registerActor("add",actor);
+    REGISTER_METHOD_FUNCTION(processor, "add", &Plugin::test_commcuncation, this);
 
+    REGISTER_METHOD_FUNCTION(processor, "test_function_add", &Plugin::test_function_add, this);
 
-    REGISTER_FUNCTION(processor, "ref", [this](int a, int b)->int{
-         return test_ref_commcuncation(a,b);
-    })
+    REGISTER_METHOD_FUNCTION(processor, "test_function_more_para", &Plugin::test_function_more_para, this);
 
-    REGISTER_FUNCTION(processor, "widget", [this](QWidget* widget)->void{
-        test_commcuncation_const(widget);
-        qDebug() << "actor-communication-main-plugins plugin respond" ;
-    })
+    REGISTER_METHOD_FUNCTION(processor, "test_function_para", &Plugin::test_function_para, this);
+
+    REGISTER_METHOD_FUNCTION(processor, "test_function_para_combine", &Plugin::test_function_para_combine, this);
+
+    REGISTER_METHOD_FUNCTION(processor, "test_function_return", &Plugin::test_function_return, this);
+
+    REGISTER_METHOD_FUNCTION(processor, "test_commcuncation", &Plugin::test_commcuncation, this);
+
+    REGISTER_METHOD_FUNCTION(processor, "ref", &Plugin::test_ref_commcuncation, this);
+
+    REGISTER_METHOD_FUNCTION(processor, "widget", &Plugin::test_commcuncation_const, this);
 }
 
 void Plugin::setTopMenu(QMenu *newTopMenu)

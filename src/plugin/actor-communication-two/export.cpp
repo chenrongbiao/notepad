@@ -43,7 +43,7 @@ bool NDD_PROC_IDENTIFY(NDD_PROC_DATA* pProcData)
     {
         return false;
     }
-    pProcData->m_strPlugName = QObject::tr("communication-main-plugin");
+    pProcData->m_strPlugName = QObject::tr("two");
     pProcData->m_strComment = QObject::tr("test");
 
     pProcData->m_version = QString("1.0");
@@ -53,7 +53,7 @@ bool NDD_PROC_IDENTIFY(NDD_PROC_DATA* pProcData)
     return true;
 }
 
-//主框架调用插件曝露的接口 ：add(int a,int b) 返回和
+//测试插件之间通信
 int NDD_PROC_MAIN_V2(QWidget* pNotepad, const QString& strFileName,ActorProcessor* processor,NDD_PROC_DATA* pProcData)
 {
     //务必拷贝一份pProcData，在外面会释放。
@@ -67,8 +67,11 @@ int NDD_PROC_MAIN_V2(QWidget* pNotepad, const QString& strFileName,ActorProcesso
     }
 
     s_pMainNotepad = pNotepad;
+
     Plugin * plugin = new Plugin();
 
     plugin->setActorProcessor(processor);
+    plugin->setTopMenu(pProcData->m_rootMenu);
+
     return 0;
 }

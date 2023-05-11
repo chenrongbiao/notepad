@@ -373,11 +373,11 @@ private:
 	void updateProAfterSaveNewFile(int curTabIndex, QString fileName, ScintillaEditView * pEdit);
 	void setShoctIcon(int iconSize=24);
 	void initToolBar();
-
+#ifdef NO_PLUGIN
     void initActor();
-
-	void setTxtLexer(ScintillaEditView * pEdit);
-	void saveTabEdit(int tabIndex);
+#endif
+    void setTxtLexer(ScintillaEditView *pEdit);
+    void saveTabEdit(int tabIndex);
 	void saveReceneOpenFile();
 	void updateSaveAllToolBarStatus();
 	void initReceneOpenFileMenu();
@@ -534,10 +534,9 @@ private:
     ActorProcessor* processor;
 #endif
 
-
-	//最近打开的对比文件和目录列表。做一个环形区
-//保存在数据库中
-	int m_receneDirStartPos;
+    //最近打开的对比文件和目录列表。做一个环形区
+    //保存在数据库中
+    int m_receneDirStartPos;
 	int m_receneFileStartPos;
 	QList<QAction*> m_receneDirList;
 	QList<QAction*> m_receneFileList;
