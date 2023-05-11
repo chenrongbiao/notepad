@@ -25,35 +25,28 @@
 #include <QString>
 
 class QsciScintilla;
-class FileTreeViewPluginPrivate;
+class PluginPrivate;
 class ActorProcessor;
 
-class FileTreeViewPlugin :public QObject
+class Plugin :public QObject
 {
     Q_OBJECT
 public:
-    FileTreeViewPlugin(QObject *parent = nullptr);
-    ~FileTreeViewPlugin();
+    Plugin(QObject *parent = nullptr);
+    ~Plugin();
 
 public:
     void setActorProcessor(ActorProcessor*processor);
-    void setMenuActions(QMenu *menu);
-    void setCurrentEditFunc(std::function<QsciScintilla* ()> func);
     void setNotepad(QWidget *newNotepad);
     void setTopMenu(QMenu *newTopMenu);
-    void setPluginModulePath(const QString &newPluginModulePath);
-private:
-    void bindAction();
-
 public slots:
-    void slotMenuItemClick();
-
+    void slotTestPluginCommuncation();
 private:
-    FileTreeViewPluginPrivate * const d_ptr;
-    Q_DECLARE_PRIVATE(FileTreeViewPlugin);
+    PluginPrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(Plugin)
 
-    FileTreeViewPlugin(const FileTreeViewPlugin &) = delete;
-    FileTreeViewPlugin &operator=(const FileTreeViewPlugin &) = delete;
+    Plugin(const Plugin &) = delete;
+    Plugin &operator=(const Plugin &) = delete;
 };
 
 #endif // FILETREEWIDGET_H

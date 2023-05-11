@@ -1,4 +1,4 @@
-set(LOCAL_PLUGIN_NAME "filetreeview")
+﻿set(LOCAL_PLUGIN_NAME "actor-communication-two")
 
 # TTS-plugin 核心构建
 # 在模块化构建中，这个部分代表着构建 TTS-plugin 插件

@@ -18,13 +18,14 @@ public:
     using ActorMap = std::unordered_map<std::string, Actor *>;
 
     // processor状态
-    enum StatusType { SUCESS, FAULT, ERROR, DEFAULT };
+    enum StatusType { SUCESS, FAULT, DEFAULT};
 
 public:
     /**
      * 模板调用函数
      * @note:由于模板自动推导的缺陷，返回值与第一个参数类型相同时，需要显示指定类型
-     *       因此，请避免返回值类型与第一个参数类型相同，以达到更加统一的调用方式
+     *      void get(int a)调用格式为p->invoke("get", 1)，自动推导;
+     *      因此，请避免返回值类型与第一个参数类型相同，以达到更加统一的调用方式
      * -route：  路由
      * -args：   参数列表
     */
@@ -42,7 +43,8 @@ public:
     /**
      * 模板调用函数
      * @note:由于模板自动推导的缺陷，返回值与第一个参数类型相同时，需要显示指定类型
-     *       因此，请避免返回值类型与第一个参数类型相同，以达到更加统一的调用方式
+     *      如：int add(int a, int b)调用格式为p->invoke<int, int, int>("add", 1,2);
+     *      因此，请避免返回值类型与第一个参数类型相同，以达到更加统一的调用方式
      * -route：  路由
      * -args：   参数列表
     */

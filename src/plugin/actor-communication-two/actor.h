@@ -1,4 +1,4 @@
-#ifndef _ACTOR_H_
+﻿#ifndef _ACTOR_H_
 #define _ACTOR_H_
 
 #include <cstdint>
