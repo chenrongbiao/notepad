@@ -1,4 +1,4 @@
-﻿
+
 option(USE_NOTEPAD_PLUGIN "构建 Notepad-- 内部插件" ON)
 option(USE_NOTEPAD_PLUGIN_BASE "构建 Notepad-- 内部的插件基础模板" OFF)
 
@@ -19,12 +19,12 @@ if(USE_NOTEPAD_PLUGIN)
         add_subdirectory(template-plugins/base-secondary-menu-ui-plugin-v1)
     endif(USE_NOTEPAD_PLUGIN_BASE)
 
-#    # 一个简单的插件示例，但依赖于外部的 opencc 项目(基于 git)
-#    add_subdirectory(opencc-demo-plugin)
-#    # 一个简单的版本更新检查的插件
-#    add_subdirectory(versionUpdate)
-#    # 一个简单的可二次扩展的插件
-#    add_subdirectory(external-plugin)
+    # 一个简单的插件示例，但依赖于外部的 opencc 项目(基于 git)
+    add_subdirectory(opencc-demo-plugin)
+    # 一个简单的版本更新检查的插件
+    add_subdirectory(versionUpdate)
+    # 一个简单的可二次扩展的插件
+    add_subdirectory(external-plugin)
 
     # Linux 可构建的插件
     if(UNIX AND NOT APPLE)
@@ -33,6 +33,6 @@ if(USE_NOTEPAD_PLUGIN)
     endif(UNIX AND NOT APPLE)
     
     # TTS 语音合成
-    add_subdirectory(filetreeview)
+    add_subdirectory(TTS-plugin)
 
 endif(USE_NOTEPAD_PLUGIN)
