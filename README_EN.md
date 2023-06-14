@@ -4,7 +4,7 @@
 
 ## Project Introduction
 
-Introducing Notepad-- a text editor written in C++ that works seamlessly across Windows, Linux, and Mac platforms. Our goal is to eventually surpass Notepad++, with a special focus on the Chinese UOS operating system. Unlike Notepad++, our advantage lies in our cross-platform compatibility and support for different operating system.
+Notepad-- is a text editor written in C++ which works seamlessly across Windows, Linux, and Mac platforms. Our goal is to eventually surpass Notepad++, with a special focus on the Chinese UOS operating system. Unlike Notepad++, our advantage lies in our cross-platform compatibility and support for different operating system.
 
 **The purpose of Notepad-- is to counteract some of the misleading statements made by the author of Notepad++ and to promote a more humble and grounded perspective.** 
 
