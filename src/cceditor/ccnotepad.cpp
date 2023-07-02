@@ -27,6 +27,7 @@
 #include "shortcutkeymgr.h"
 #include "md5hash.h"
 #include "CmpareMode.h"
+#include "ZoomPrompt.h"
 
 #ifdef NO_PLUGIN
 #include "pluginmgr.h"
@@ -6474,7 +6475,22 @@ void CCNotePad::slot_zoomin()
 //ctrl+鼠标放大缩小zoom，由pedit发送的消息
 //任何一个编辑框修改，其余的编辑框也需要同步修改
 void CCNotePad::slot_zoomValueChange()
+{
+	//弹出字体缩放比例提示弹窗，需要过滤掉slot_zoomValueChange的第一次调用
+	static bool first = true;
+	if (first)
 	{
+		first = false;
+	}
+	else
+	{
+		//由数字 -1 0 1 2 3... 转换为百分比
+		int percent = 100;
+		percent += s_zoomValue * 10;
+		ZoomPrompt::instance()->show(percent, this);
+	}
+	
+
 	ScintillaEditView* pSrcEdit = dynamic_cast<ScintillaEditView*>(sender());
 	if (pSrcEdit != nullptr)
 	{
@@ -6483,13 +6499,13 @@ void CCNotePad::slot_zoomValueChange()
 		int curZoomValue = pSrcEdit->execute(SCI_GETZOOM);
 
 		if (s_zoomValue != curZoomValue)
-			{
-				s_zoomValue = curZoomValue;
-				NddSetting::updataKeyValueFromNumSets(ZOOMVALUE, s_zoomValue);
+		{
+			s_zoomValue = curZoomValue;
+			NddSetting::updataKeyValueFromNumSets(ZOOMVALUE, s_zoomValue);
 			int zoomValue = 100 + 10 * curZoomValue;
 			ui.statusBar->showMessage(tr("Current Zoom Value is %1%").arg(zoomValue));
 			setZoomLabelValue(zoomValue);
-	}
+		}
 
 		//修改其余的pedit
 		for (int i = ui.editTabWidget->count() - 1; i >= 0; --i)
@@ -6504,9 +6520,9 @@ void CCNotePad::slot_zoomValueChange()
 				pEdit->zoomTo(s_zoomValue);
 				pEdit->updateLineNumberWidth();
 				connect(pEdit, SIGNAL(SCN_ZOOM()), this, SLOT(slot_zoomValueChange()));
-}
+			}
+		}
 	}
-}
 }
 
 void CCNotePad::zoomto(int zoomValue)
