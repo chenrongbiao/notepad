@@ -1,4 +1,4 @@
-﻿#include <memory>
+#include <memory>
 #include "ccnotepad.h"
 #include "filemanager.h"
 #include "Encode.h"
@@ -5500,7 +5500,7 @@ bool  CCNotePad::saveFile(QString fileName, ScintillaEditView* pEdit, bool isBak
 			QFile::remove(swapFilePath);
 		}
 #else
-		if (success && isClearSwpFile)
+		if (success /*&& isClearSwpFile*/)
 		{
 			QFile::remove(swapFilePath);
 	}
