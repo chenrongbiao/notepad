@@ -1,4 +1,4 @@
-﻿#include <memory>
+#include <memory>
 #include "ccnotepad.h"
 #include "filemanager.h"
 #include "Encode.h"
@@ -1083,6 +1083,12 @@ LexerInfo CCNotePad::getLangLexerIdByFileExt(QString filePath)
 	LexerInfo lexer(L_TXT,"txt");
 
 	if(ExtLexerManager::getInstance()->getLexerTypeByExt(ext, lexer))
+	{
+		return lexer;
+	}
+
+    // 如果没有获取都，再获取一次小写后缀的，适配一下没有设置自定义格式的语言
+    if(ExtLexerManager::getInstance()->getLexerTypeByExt(ext.toLower(), lexer))
 	{
 		return lexer;
 	}
