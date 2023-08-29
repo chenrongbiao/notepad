@@ -3,9 +3,8 @@
 [中文 ](README.md) | [English](README_EN.md)
 
 ## 项目简介
-
+Fork
 这是一个使用C++编写的文本编辑器Notepad--,可以支持Win/Linux/Mac平台。
-
 我们的目标是要进行文本编辑类软件的国产可替代，重点在国产Uos/Linux系统、Mac 系统上发展。
 
 一个支持windows/linux/mac的文本编辑器，目标是要国产替换同类软件，来自中国。
