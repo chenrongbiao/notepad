@@ -7,6 +7,7 @@
 #include <QHeaderView>
 #include <QSettings>
 #include <QMessageBox>
+#include <QFile>
 
 int ITEM_CHANGED = Qt::UserRole; 
 int ITEM_LEX_ID = Qt::UserRole + 1; //对应的语法lexer的 ID

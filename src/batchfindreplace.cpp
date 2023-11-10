@@ -7,6 +7,7 @@
 
 #include <QTableWidgetItem>
 #include <QFileDialog>
+#include <QRegExp>
 
 BatchFindReplace::BatchFindReplace(QWidget *parent)
 	: QMainWindow(parent), m_curEditWin(nullptr), m_editTabWidget(nullptr)

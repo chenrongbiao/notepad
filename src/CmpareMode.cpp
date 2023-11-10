@@ -10,6 +10,7 @@
 #include <functional>
 #include <QDataStream>
 #include <QtConcurrent>
+#include <QRegExp>
 
 
 CmpareMode::CmpareMode()

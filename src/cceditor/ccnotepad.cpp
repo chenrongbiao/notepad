@@ -8294,7 +8294,7 @@ bool CCNotePad::nativeOpenfile(QString openFilePath)
 	this->activateWindow();
 	return true;
 }
-bool CCNotePad::nativeEvent(const QByteArray & eventType, void * message, long * result)
+bool CCNotePad::nativeEvent(const QByteArray & eventType, void * message, qintptr* result)
 {
 	MSG *param = static_cast<MSG *>(message);
 
