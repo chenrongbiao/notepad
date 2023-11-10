@@ -206,7 +206,7 @@ protected:
 	void dragLeaveEvent(QDragLeaveEvent* event);
 	bool eventFilter(QObject *watched, QEvent *event)override;
 #ifdef Q_OS_WIN
-	bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+	virtual bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 	bool nativeOpenfile(QString openFilePath);
 #endif
 #ifdef uos

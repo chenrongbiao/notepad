@@ -67,6 +67,7 @@
 #include <QDesktopServices>
 #include <QDebug>
 #include <QMessageBox>
+#include <QRegExp>
 
 
 #include <stdexcept>
@@ -3424,7 +3425,7 @@ bool isUrlQueryDelimiter(QChar const c)
 void scanToUrlEnd(QString & text, int textLen, int start, int* distance)
 {
 	int p = start;
-	QChar q = 0;
+	QChar q = (QChar)0;
 	enum { sHostAndPath, sQuery, sQueryAfterDelimiter, sQueryQuotes, sQueryAfterQuotes, sFragment } s = sHostAndPath;
 	while (p < textLen)
 	{
