@@ -483,6 +483,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="cceditor/ccnotepad.ui" line="487"/>
+        <source>Expression evaluation</source>
+        <translation type="unfinished">表达式求值(计算器)</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="491"/>
+        <source>Evaluation Accuracy</source>
+        <translation type="unfinished">浮点数精度</translation>
+    </message>
+    <message>
         <location filename="cceditor/ccnotepad.ui" line="527"/>
         <location filename="ui_ccnotepad.h" line="1670"/>
         <source>About</source>
@@ -1538,6 +1548,96 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="cceditor/ccnotepad.ui" line="2108"/>
+        <source>Use Enter key</source>
+        <translation type="unfinished">=号后按回车键计算</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2119"/>
+        <source>Use ? key</source>
+        <translation type="unfinished">=号后按?问号键计算</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2254"/>
+        <source>JIT eval on status bar</source>
+        <translation type="unfinished">即时计算(状态栏显示)</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2127"/>
+        <source>1 decimal places</source>
+        <translation type="unfinished">1位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2135"/>
+        <source>2 decimal places</source>
+        <translation type="unfinished">2位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2143"/>
+        <source>3 decimal places</source>
+        <translation type="unfinished">3位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2151"/>
+        <source>4 decimal places</source>
+        <translation type="unfinished">4位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2159"/>
+        <source>5 decimal places</source>
+        <translation type="unfinished">5位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2170"/>
+        <source>6 decimal places</source>
+        <translation type="unfinished">6位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2178"/>
+        <source>7 decimal places</source>
+        <translation type="unfinished">7位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2186"/>
+        <source>8 decimal places</source>
+        <translation type="unfinished">8位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2194"/>
+        <source>9 decimal places</source>
+        <translation type="unfinished">9位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2202"/>
+        <source>10 decimal places</source>
+        <translation type="unfinished">10位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2210"/>
+        <source>11 decimal places</source>
+        <translation type="unfinished">11位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2218"/>
+        <source>12 decimal places</source>
+        <translation type="unfinished">12位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2226"/>
+        <source>13 decimal places</source>
+        <translation type="unfinished">13位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2234"/>
+        <source>14 decimal places</source>
+        <translation type="unfinished">14位</translation>
+    </message>
+    <message>
+        <location filename="cceditor/ccnotepad.ui" line="2242"/>
+        <source>15 decimal places</source>
+        <translation type="unfinished">15位</translation>
+    </message>
+    <message>
         <location filename="cceditor/ccnotepad.ui" line="1624"/>
         <location filename="ui_ccnotepad.h" line="1520"/>
         <source>Register</source>
@@ -2351,9 +2451,9 @@
     </message>
     <message>
         <location filename="cceditor/ccnotepad.cpp" line="4577"/>
-        <source>File %1 
+        <source>File %1
 File Size %2 &gt; %3M, How to Open it ?</source>
-        <translation type="unfinished"> 文件 %1 
+        <translation type="unfinished"> 文件 %1
  文件大小 %2 大于 %3M，请选择打开方式。</translation>
     </message>
     <message>
@@ -2575,7 +2675,7 @@ File Size %2 &gt; %3M, How to Open it ?</source>
     </message>
     <message>
         <location filename="cceditor/ccnotepad.cpp" line="5453"/>
-        <source>Save File %1 failed. You may not have write privileges 
+        <source>Save File %1 failed. You may not have write privileges
 Please save as a new file!</source>
         <translation type="unfinished">保存文件 %1 失败！ 你可能没有文件写权限，请另存为一个新文件！</translation>
     </message>
@@ -2601,7 +2701,7 @@ Please save as a new file!</source>
     <message>
         <source>&quot;%1&quot;
 
- 
+
 This file has been modified by another program.
 Do you want to reload it?</source>
         <translation type="obsolete">%1\n\n \n文件已在外部被其它程序修改。\n是否重新加载该文件?</translation>
@@ -2898,7 +2998,7 @@ Do you want to reload it?</source>
         <translation type="unfinished">当前是常规文本文档，不能使用该功能！</translation>
     </message>
     <message>
-        <source>bugfix: https://github.com/cxasm/notepad-- 
+        <source>bugfix: https://github.com/cxasm/notepad--
 china: https://gitee.com/cxasm/notepad--</source>
         <oldsource>bugfix: https://github.com/cxasm/notepad--</oldsource>
         <translation type="obsolete">bug反馈：https://github.com/cxasm/notepad--
@@ -3628,11 +3728,11 @@ please wait ...</source>
     <message>
         <location filename="comparehexwin.cpp" line="663"/>
         <location filename="comparehexwin.cpp" line="668"/>
-        <source>Left size %1 byte, right size %2 byte 
-Equal content size %3 
+        <source>Left size %1 byte, right size %2 byte
+Equal content size %3
 Left Equal ratio %4 Right Equal ratio %5</source>
         <translation type="unfinished">左文件大小 %1 右文件大小 %2
-相等内容长度 %3 
+相等内容长度 %3
 左边相等率 %4 右边相等率%5</translation>
     </message>
 </context>
@@ -5202,14 +5302,14 @@ file size %1, please wait ...</source>
     <message>
         <location filename="findwin.ui" line="270"/>
         <location filename="ui_findwin.h" line="1054"/>
-        <source>Find All in Current 
+        <source>Find All in Current
  Document</source>
         <translation type="unfinished">在当前文件中查找</translation>
     </message>
     <message>
         <location filename="findwin.ui" line="284"/>
         <location filename="ui_findwin.h" line="1056"/>
-        <source>Find All in All Opened 
+        <source>Find All in All Opened
  Documents</source>
         <translation type="unfinished">查找所有打开文件</translation>
     </message>
@@ -5250,7 +5350,7 @@ file size %1, please wait ...</source>
     <message>
         <location filename="findwin.ui" line="622"/>
         <location filename="ui_findwin.h" line="1075"/>
-        <source>Replace All in All Opened 
+        <source>Replace All in All Opened
  Documents</source>
         <translation type="unfinished">替换所有打开文件</translation>
     </message>
@@ -5685,7 +5785,7 @@ file size %1, please wait ...</source>
     <message>
         <location filename="hexcmprangewin.ui" line="32"/>
         <location filename="ui_hexcmprangewin.h" line="172"/>
-        <source>Max Bin File Size is 10M ! Exceeding file size ! 
+        <source>Max Bin File Size is 10M ! Exceeding file size !
 Select a shorter range for comparison. </source>
         <translation type="unfinished">文件最大对比长度为10M! 当前文件超过最大限制。
 请选择一个文件范围来进行对比。</translation>
@@ -5847,7 +5947,7 @@ Select a shorter range for comparison. </source>
     <name>LangExtSet</name>
     <message>
         <location filename="langextset.cpp" line="99"/>
-        <source>current lang: %1 
+        <source>current lang: %1
 ext file suffix is : %2
 Double-click a column item to modify the syntax association file.</source>
         <translation type="unfinished">当前语言：%1
@@ -7487,8 +7587,8 @@ Double-click a column item to modify the syntax association file.</source>
     </message>
     <message>
         <location filename="scintillaeditview.cpp" line="2303"/>
-        <source>Current Select Word Nums is %1 . 
-Line nums is %2 . 
+        <source>Current Select Word Nums is %1 .
+Line nums is %2 .
 Space nums is %3, Non-space is %4 .</source>
         <translation type="unfinished">当前选择文本字符数量是 %1
 行数量是 %2
@@ -7496,8 +7596,8 @@ Space nums is %3, Non-space is %4 .</source>
     </message>
     <message>
         <location filename="scintillaeditview.cpp" line="2318"/>
-        <source>Current Doc Word Nums is %1 . 
-Line nums is %2 . 
+        <source>Current Doc Word Nums is %1 .
+Line nums is %2 .
 Space nums is %3, Non-space is %4 .</source>
         <translation type="unfinished">当前文本字符数量是 %1
 行数量是 %2

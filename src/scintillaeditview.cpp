@@ -9,6 +9,7 @@
 #include "filemanager.h"
 #include "shortcutkeymgr.h"
 #include "markdownview.h"
+#include "nddsetting.h"
 
 #include <Scintilla.h>
 #include <SciLexer.h>
@@ -67,15 +68,17 @@
 #include <QDesktopServices>
 #include <QDebug>
 #include <QMessageBox>
+#include <QTime>
 
 
 #include <stdexcept>
 #include <mutex>
+#include <map>
 
 
 
 // initialize the static variable
-#define DEFAULT_FONT_NAME "Courier New" //"Microsoft YaHei"  
+#define DEFAULT_FONT_NAME "Courier New" //"Microsoft YaHei"
 
 
 int ScintillaEditView::s_tabLens = 4;
@@ -244,8 +247,182 @@ ScintillaEditView* ScintillaEditView::createEditForSearch()
 	return new ScintillaEditView();
 }
 
+//tinyexpr++只支持数值运算并返回双精度浮点结果，未支持时间表达式加减法，在此单独简单实现
+//时间表达式不支持即时求值，只能在输入完整表达式和=等号后，按回车或?号计算时间差或者和
+//经常进行视频或者音频编辑的行业用户适用此功能，计算影片裁剪长度等用途
+static inline const std::map<QString, QString> s_timeFormat = {
+{"^(\\d{1,2}):(\\d{1,2})\\.(\\d{1,3})$", "m:s.z"},
+{"^(\\d{1,2}):(\\d{1,2}):(\\d{1,2})$", "h:m:s"},
+{"^(\\d{1,2}):(\\d{1,2}):(\\d{1,2})\\.(\\d{1,3})$", "h:m:s.z"},
+{"^(\\d{1,2})h(\\d{1,2})m$", "h'h'm'm'"},
+{"^(\\d{1,2})m(\\d{1,2})s$", "m'm's's'"},
+{"^(\\d{1,2})m(\\d{1,2})$", "m'm's"},
+{"^(\\d{1,2})m(\\d{1,2})\\.(\\d{1,3})$", "m'm's.z"},
+{"^(\\d{1,2})m(\\d{1,2})s(\\d{1,3})$", "m'm's's'z"},
+{"^(\\d{1,2})m(\\d{1,2})s\\.(\\d{1,3})$", "m'm's's'.z"},
+{"^(\\d{1,7})s$", "s's'"},
+{"^(\\d{1,7})$", "s"},
+{"^(\\d{1,7})s(\\d{1,3})$", "s's'z"},
+{"^(\\d{1,7})s\\.(\\d{1,3})$", "s's'.z"},
+{"^(\\d{1,7})\\.(\\d{1,3})$", "s.z"},
+{"^(\\d{1,2})h(\\d{1,2})m(\\d{1,2})$", "h'h'm'm's"},
+{"^(\\d{1,2})h(\\d{1,2})m(\\d{1,2})s$", "h'h'm'm's's'"},
+{"^(\\d{1,2})h(\\d{1,2})m(\\d{1,2})\\.(\\d{1,3})$", "h'h'm'm's.z"},
+{"^(\\d{1,2})h(\\d{1,2})m(\\d{1,2})s\\.(\\d{1,3})$", "h'h'm'm's's'.z"}
+};
+static inline const auto s_reTimeformat = QRegularExpression(
+	"^((\\d+[h:])?(\\d+[m:])?\\d+((s|\.|s\.)\\d+)?)([+\\-])([\\d:hms\\.]+)$");
+static inline const auto ztmfront = QRegularExpression("^[0:]*");
+
+inline QString timetrim(const QString& intm)
+{
+	return QString(intm).remove(ztmfront);
+}
+
+inline QString& removeTail0andDot(QString& s)
+{
+	if (s.contains(".")) {
+		while (s.back() == '0') s.chop(1);
+		if (s.back() == '.') s.chop(1);
+	}
+	return s;
+}
+
+static inline bool timeExprCalc(const QString& expr, QString& retstr) {
+	QString tmstr = expr;
+	tmstr.replace(" ", "");
+	auto m = s_reTimeformat.match(tmstr);
+	if (!m.hasMatch())
+		return false;
+	auto tm1 = m.captured(1);
+	bool tmadd = bool(m.captured(6) == "+");
+	auto tm2 = m.captured(7);
+	QTime qtm1;
+	QTime qtm2;
+//	for (int i = 1; i <= 7; ++i)
+//		qDebug() << i << m.captured(i);
+	bool allOK = false;
+	for (const auto& [key, val] : s_timeFormat) {
+		auto re1 = QRegularExpression(key);
+		if (!qtm1.isValid()) {
+			auto mtm = re1.match(tm1);
+			if (mtm.hasMatch()) {
+				qtm1 = QTime::fromString(tm1, val);
+				qDebug() << "time pat" << key << timetrim(qtm1.toString("h:m:s.z"));
+			}
+		}
+		auto re2 = QRegularExpression(key);
+		if (!qtm2.isValid()) {
+			auto mtm = re2.match(tm2);
+			if (mtm.hasMatch()) {
+				qtm2 = QTime::fromString(tm2, val);
+				qDebug() << "time pat" << key << timetrim(qtm2.toString("h:m:s.z"));
+			}
+		}
+		if (qtm1.isValid() && qtm2.isValid())
+		{
+			allOK = true;
+			break;
+		}
+	}
+	if (!allOK)
+		return false;
+	QTime res = QTime::fromMSecsSinceStartOfDay(tmadd?
+		qtm1.msecsSinceStartOfDay() + qtm2.msecsSinceStartOfDay():
+		qtm1.msecsSinceStartOfDay() - qtm2.msecsSinceStartOfDay()
+	);
+	retstr = timetrim(res.toString("h:m:s.z"));
+	removeTail0andDot(retstr);
+	return true;
+}
+
+bool ScintillaEditView::tinyexprCalc(evltype evt) {
+	int line, index;
+	getCursorPosition(&line, &index);
+	if (index <= 0)
+		return false;
+	int idx = index - 1;
+	QString linetxt = text(line);
+	if (linetxt.length() < 1)
+		return false;
+	switch(evt)
+	{
+	case EVAL_QUESTION:
+		if (!NddSetting::getKeyValueFromNumSets(QUESTION_EVAL))
+			return false;
+		if (linetxt.at(idx) != '=') //只有光标左边是等号才计算
+			return false;
+		break;
+	case EVAL_ENTER:
+		if (!NddSetting::getKeyValueFromNumSets(ENTER_EVAL))
+			return false;
+		if (linetxt.at(idx) != '=') //只有光标左边是等号才计算
+			return false;
+		break;
+	case EVAL_JIT:
+	default:
+		if (!NddSetting::getKeyValueFromNumSets(JIT_EVAL))
+			return false;
+		++idx; //即时计算时光标左边不是等号，无需跳过
+		break;
+	}
+	const int eval_accuracy = NddSetting::getKeyValueFromNumSets(EVAL_ACCURACY);
+	QString exprline = linetxt.left(idx);
+	bool is_eq = false;
+	int i = 0;
+	//TODO:利用正规表达式似乎能简化这部分代码，然而不会写
+	//循环从右向左看，第一个单独出现的=号作为表达式左边界，==属于表达式逻辑运算符被接受
+	for (int ii = idx - 1; ii > -1; --ii) {
+		if (exprline.at(ii) == '=') {
+				is_eq = !is_eq;
+		} else if (is_eq) {
+			i = ii + 2;
+			break;
+		}
+	}
+	while (i < idx) {
+		auto expr = exprline.mid(i);
+		if (evt != EVAL_JIT) {
+			QString retstr;
+			if (timeExprCalc(expr, retstr)) {
+				insertAt(retstr, line, idx + 1);
+				setCursorPosition(line, idx + 1 + retstr.length());
+				return true;
+			}
+		}
+		//VS2019默认C++14，tinyexpr++无外部依赖库但用了C++17语法，VC++需要启用C++17或20标准来编译
+		auto v = m_tinyEpr.evaluate(expr.toStdString());
+		if (!std::isnan(v)) {
+			QString res = QString::number(v, 'g', eval_accuracy);
+			if (res.contains('.')) //消小数点末尾无用0；只剩小数点也将之消除，显示为整数
+				removeTail0andDot(res);
+			if(evt == EVAL_JIT) {
+				res = expr + "=" + res;
+				CCNotePad* pv = dynamic_cast<CCNotePad*>(m_NoteWin);
+				if (pv != nullptr)
+				{
+					pv->set_eval_jit_value(res);
+				}
+			} else {
+				insertAt(res, line, idx + 1);
+				setCursorPosition(line, idx + 1 + res.length());
+			}
+			//qDebug() << "tinyexpr: " << expr << " = " << res;
+			return true;
+		}
+		while (++i && i < idx - 1 &&
+			!s_teSymbols.contains(exprline.at(i)) &&
+			!(s_teLookfwdSymbols.contains(exprline.at(i)) &&
+				exprline.at(i) == exprline.at(i+1))
+		) {}
+	}
+	return false;
+}
+
 
 //截获ESC键盘，让界面去退出当前的子界面
+//处理回车和问号，如果符合光标左边是等号条件，执行表达式求值
+//即时求值开启时，按数字、右圆括号、END、BACKSP按键时会求值并显示在状态栏
 void ScintillaEditView::keyPressEvent(QKeyEvent* event)
 {
 	switch (event->key())
@@ -256,10 +433,23 @@ void ScintillaEditView::keyPressEvent(QKeyEvent* event)
 			m_NoteWin->on_quitActiveWindow();
 		}
 		break;
+	case Qt::Key_Return:
+	case Qt::Key_Enter:
+		tinyexprCalc(EVAL_ENTER);
+		break;
+	case Qt::Key_Question:
+		if(tinyexprCalc(EVAL_QUESTION))
+			return; //返回真值吃掉输入的?号不上屏，或者说?号被运算结果所替代
+	case Qt::Key_0:case Qt::Key_1:case Qt::Key_2:case Qt::Key_3:case Qt::Key_4:
+	case Qt::Key_5:case Qt::Key_6:case Qt::Key_7:case Qt::Key_8:case Qt::Key_9:
+	case Qt::Key_ParenRight:case Qt::Key_Backspace:case Qt::Key_End:
+		QsciScintilla::keyPressEvent(event);
+		tinyexprCalc(EVAL_JIT);
+		return;
 	default:
 		break;
 	}
-	return QsciScintilla::keyPressEvent(event);
+	QsciScintilla::keyPressEvent(event);
 }
 
 
@@ -319,7 +509,7 @@ void ScintillaEditView::updateLineNumbersMargin(bool forcedToHide) {
 	{
 		execute(SCI_SETMARGINWIDTHN, _SC_MARGE_LINENUMBER, (sptr_t)0);
 	}
-	else 
+	else
 	{
 		updateLineNumberWidth(0);
 	}
@@ -370,7 +560,7 @@ void ScintillaEditView::updateLineNumberWidth(int lineNumberMarginDynamicWidth)
 		auto pixelWidth = 6 + nbDigits * execute(SCI_TEXTWIDTH, STYLE_LINENUMBER, reinterpret_cast<sptr_t>("8"));
 		execute(SCI_SETMARGINWIDTHN, _SC_MARGE_LINENUMBER, pixelWidth);
 
-			
+
 	}
 	}
 	else
@@ -378,7 +568,7 @@ void ScintillaEditView::updateLineNumberWidth(int lineNumberMarginDynamicWidth)
 		int pixelWidth = 6 + INIT_BIG_RO_TEXT_LINE_WIDTH * execute(SCI_TEXTWIDTH, STYLE_LINENUMBER, reinterpret_cast<sptr_t>("8"));
 		execute(SCI_SETMARGINWIDTHN, SC_BIGTEXT_LINES, pixelWidth);
 	}
-	
+
 }
 
 
@@ -440,7 +630,7 @@ QString ScintillaEditView::getTagByLexerId(int lexerId)
 
 	case L_OBJC:
 		return ("objc");
-	
+
 	case L_CS:
 		return ("csharp");
 
@@ -470,7 +660,7 @@ QString ScintillaEditView::getTagByLexerId(int lexerId)
 
 	case L_SQL:
 		return "sql";
-		
+
 	case L_VB:
 		return "vb";
 
@@ -655,7 +845,7 @@ QString ScintillaEditView::getTagByLexerId(int lexerId)
 	default:
 		break;
 	}
-	
+
 	return "";
 }
 
@@ -989,7 +1179,7 @@ QList<FindRecords *>& ScintillaEditView::getCurMarkRecord()
 
 void ScintillaEditView::setIndentGuide(bool willBeShowed)
 {
-	QsciLexer* pLexer = this->lexer(); 
+	QsciLexer* pLexer = this->lexer();
 	if (nullptr == pLexer)
 	{
 		return;
@@ -1038,7 +1228,7 @@ void ScintillaEditView::init()
 	setMarginSensitivity(_SC_MARGE_SYBOLE, true);
 	connect(this, &QsciScintilla::marginClicked, this, &ScintillaEditView::slot_bookMarkClicked);
 
-	
+
 	//开始括号匹配，比如html的<>，开启前后这类字段的匹配
 	setBraceMatching(SloppyBraceMatch);
 
@@ -1051,7 +1241,7 @@ void ScintillaEditView::init()
 	QFont font(DEFAULT_FONT_NAME, 11, QFont::Normal);
 	setFont(font);
 	setMarginsFont(font);
-	
+
 	execute(SCI_SETTABWIDTH, ScintillaEditView::s_tabLens);
 
 	//使用空格替换tab
@@ -1060,7 +1250,7 @@ void ScintillaEditView::init()
 	//这个无比要设置false，否则双击后高亮单词，拷贝时会拷贝多个选择。
 	execute(SCI_SETMULTIPLESELECTION, true);
 	execute(SCI_SETADDITIONALSELECTIONTYPING, true);
-	
+
 	execute(SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH);
 	execute(SCI_SETADDITIONALCARETSVISIBLE, true);
 
@@ -1117,7 +1307,7 @@ void ScintillaEditView::init()
 	//execute(SCI_INDICSETFORE, SCE_UNIVERSAL_FOUND_STYLE_SMART, 0x00ff00);
 
 	//设置空白字符的默认前景色
-	//execute(SCI_SETWHITESPACEFORE, true, 0x6ab5ff); 
+	//execute(SCI_SETWHITESPACEFORE, true, 0x6ab5ff);
 	execute(SCI_SETWHITESPACESIZE,3);
 
 	setCaretLineVisible(true);
@@ -1297,7 +1487,7 @@ void ScintillaEditView::showBigTextLineAddr(qint64 fileOffset, qint64 fileEndOff
 		//首行地址存在，从头到尾增加行号
 		if (startLineExist)
 		{
-	
+
 			for (int i = 0; i < lineNums; ++i)
 			{
 				if (i == (lineNums - 1))
@@ -1978,7 +2168,7 @@ void ScintillaEditView::contextUserDefineMenuEvent(QMenu* menu)
 		menu->addAction(tr("Word Count"), [this]() {
 			showWordNums();
 			});
-		
+
 	}
 	menu->show();
 }
@@ -2167,7 +2357,7 @@ bool ScintillaEditView::doBlockComment(Comment_Mode currCommentMode)
 					continue;
 				}
 			}
-			else 
+			else
 			{
 				if ((qstrncmp(linebufStr.data(), advCommentStart.data(), advCommentStart_length - 1) == 0) &&
 					(qstrncmp(linebufStr.mid(linebufStr.length() - advCommentEnd_length + 1, advCommentEnd_length - 1).data(), advCommentEnd.mid(1, advCommentEnd_length - 1).data(), advCommentEnd_length - 1) == 0))
@@ -2318,7 +2508,7 @@ void ScintillaEditView::showWordNums()
 		QMessageBox::about(this, tr("Word Nums"), tr("Current Doc Word Nums is %1 . \nLine nums is %2 . \nSpace nums is %3, Non-space is %4 .").\
 			arg(text.size() - wrapNums).arg(lineNum).arg(blank - wrapNums).arg(text.size() - blank));
 	}
-	
+
 }
 
 bool ScintillaEditView::undoStreamComment(bool tryBlockComment)
@@ -2689,7 +2879,7 @@ void ScintillaEditView::mouseDoubleClickEvent(QMouseEvent * e)
 	{
 		emit delayWork();
 	}
-	
+
 }
 
 void ScintillaEditView::changeCase(const TextCaseType & caseToConvert, QString& strToConvert) const
@@ -2710,7 +2900,7 @@ void ScintillaEditView::changeCase(const TextCaseType & caseToConvert, QString& 
 	{
 		strToConvert = strToConvert.toLower();
 		break;
-	} 
+	}
 	case TITLECASE_FORCE:
 	case TITLECASE_BLEND:
 	{
@@ -2874,7 +3064,7 @@ std::pair<size_t, size_t> ScintillaEditView::getSelectionLinesRange(intptr_t sel
 
 	if ((line1 != line2) && (static_cast<size_t>(execute(SCI_POSITIONFROMLINE, line2)) == end_pos))
 	{
-		// if the end of the selection includes the line-ending, 
+		// if the end of the selection includes the line-ending,
 		// then don't include the following line in the range
 		--line2;
 	}
@@ -3307,7 +3497,7 @@ void ScintillaEditView::columnReplace(ColumnModeInfos& cmi, int initial, int inc
 			cmi[i]._selLpos += totalDiff;
 			cmi[i]._selRpos += totalDiff;
 
-			
+
 
 			const bool hasVirtualSpc = cmi[i]._nbVirtualAnchorSpc > 0;
 			if (hasVirtualSpc) // if virtual space is present, then insert space
@@ -3721,7 +3911,7 @@ void ScintillaEditView::setStyleOptions()
 	}
 	else
 	{
-		setCaretLineBackgroundColor(QColor(0xe8e8ff)); 
+		setCaretLineBackgroundColor(QColor(0xe8e8ff));
 		setMatchedBraceForegroundColor(QColor(191, 141, 255));
 		setMatchedBraceBackgroundColor(QColor(222, 222, 222));
 		setCaretForegroundColor(QColor(0, 0, 0));
@@ -3754,9 +3944,9 @@ static void getFoldColor(QColor& fgColor, QColor& bgColor, QColor& activeFgColor
 	//这里看起来反了，但是实际代码就是如此
 	fgColor = StyleSet::s_global_style->fold.bgColor;
 	bgColor = StyleSet::s_global_style->fold.fgColor;
-	
+
 	activeFgColor = StyleSet::s_global_style->fold_active.fgColor;
-	
+
 }
 
 void ScintillaEditView::setGlobalFgColor(int style)
@@ -3800,7 +3990,7 @@ void ScintillaEditView::setGlobalFgColor(int style)
 	case CURRENT_LINE_BACKGROUND_COLOR:
 		//不能设置前景色，只能设置背景
 		break;
-		
+
 	case SELECT_TEXT_COLOR:
 		SendScintilla(SCI_SETSELFORE, true, StyleSet::s_global_style->select_text_color.fgColor);
 		break;
@@ -4335,7 +4525,7 @@ void ScintillaEditView::on_viewMarkdown()
 		m_markdownWin->setAttribute(Qt::WA_DeleteOnClose);
 		connect(this, &ScintillaEditView::textChanged, this, &ScintillaEditView::on_updataMarkdown);
 	}
-	
+
 	QString text = this->text();
 	m_markdownWin->viewMarkdown(text);
 	m_markdownWin->show();

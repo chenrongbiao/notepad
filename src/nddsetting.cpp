@@ -104,7 +104,7 @@ void NddSetting::init()
 		addKeyValueToNumSets(ICON_SIZE, 1);
 
 		addKeyValueToNumSets(ZOOMVALUE, 100);
-	
+
 		addKeyValueToNumSets(FINDRESULTPOS, Qt::BottomDockWidgetArea);
 
 		addKeyValueToNumSets(FILELISTPOS, Qt::LeftDockWidgetArea);
@@ -120,6 +120,12 @@ void NddSetting::init()
 
 		//查找结果框的默认字体大小
 		addKeyValueToNumSets(FIND_RESULT_FONT_SIZE, 14);
+
+		//表达式求值
+		addKeyValueToNumSets(ENTER_EVAL, 1);
+		addKeyValueToNumSets(QUESTION_EVAL, 1);
+		addKeyValueToNumSets(JIT_EVAL, 1);
+		addKeyValueToNumSets(EVAL_ACCURACY, 6);
 	};
 
 	if (!s_nddSet->contains(VERSION))
@@ -174,7 +180,7 @@ void NddSetting::init()
 				checkNoExistAdd(SHOWSPACE_KEY, v);
 			}
 
-			
+
 			{
 				QVariant v(100);
 				checkNoExistAdd(MAX_BIG_TEXT, v);
@@ -232,6 +238,22 @@ void NddSetting::init()
 			{
 				QVariant v(0);
 				checkNoExistAdd(LAST_ACTION_TAB_INDEX, v);
+			}
+			{
+				QVariant v(1);
+				checkNoExistAdd(ENTER_EVAL, v);
+			}
+			{
+				QVariant v(1);
+				checkNoExistAdd(QUESTION_EVAL, v);
+			}
+			{
+				QVariant v(1);
+				checkNoExistAdd(JIT_EVAL, v);
+			}
+			{
+				QVariant v(6);
+				checkNoExistAdd(EVAL_ACCURACY, v);
 			}
 		} while (false);
 
@@ -312,7 +334,7 @@ void NddSetting::close()
 				s_nddSet->sync();
 				delete s_nddSet;
 				s_nddSet = nullptr;
-				s_isContentChanged = false;	
+				s_isContentChanged = false;
 			}
 
 			//在这里保存一下子窗口的位置。不排除有可能子窗口还在，主窗口已经退出的情况，不过问题不大。
