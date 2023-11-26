@@ -41,9 +41,9 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QTabBar>
-#include <QVariant> 
+#include <QVariant>
 #include <QTextCodec>
-#include <QMessageBox> 
+#include <QMessageBox>
 #include <QToolButton>
 #include <qsciscintilla.h>
 #include <QDockWidget>
@@ -1285,19 +1285,22 @@ void CCNotePad::quickshow()
 	m_langDescLabel = new QLabel("Txt", ui.statusBar);
 
 	m_zoomLabel = new QLabel("Zoom", ui.statusBar);
+	m_jitEvalLabel = new QLabel("", ui.statusBar);
 
 	m_codeStatusLabel->setMinimumWidth(120);
 	m_lineEndLabel->setMinimumWidth(100);
 	m_lineNumLabel->setMinimumWidth(120);
 	m_langDescLabel->setMinimumWidth(100);
 	m_zoomLabel->setMinimumWidth(100);
+	m_jitEvalLabel->setMinimumWidth(30);
 
 	//0在前面，越小越在左边
-	ui.statusBar->insertPermanentWidget(0, m_zoomLabel);
-	ui.statusBar->insertPermanentWidget(1, m_langDescLabel);
-	ui.statusBar->insertPermanentWidget(2, m_lineNumLabel);
-	ui.statusBar->insertPermanentWidget(3, m_lineEndLabel);
-	ui.statusBar->insertPermanentWidget(4, m_codeStatusLabel);
+	ui.statusBar->insertPermanentWidget(0, m_jitEvalLabel);
+	ui.statusBar->insertPermanentWidget(1, m_zoomLabel);
+	ui.statusBar->insertPermanentWidget(2, m_langDescLabel);
+	ui.statusBar->insertPermanentWidget(3, m_lineNumLabel);
+	ui.statusBar->insertPermanentWidget(4, m_lineEndLabel);
+	ui.statusBar->insertPermanentWidget(5, m_codeStatusLabel);
 
 
 	initToolBar();
@@ -1921,7 +1924,7 @@ void CCNotePad::slot_batchFind()
 	{
 	adjustWInPos(m_batchFindWin);
 	}
-#endif 
+#endif
 
 }
 
@@ -2594,7 +2597,7 @@ void CCNotePad::slot_showCmdInExplorer()
 	{
 		ui.statusBar->showMessage(tr("open cmd in file dir %1 failed.").arg(dirEment));
 	}
-#if 0 
+#if 0
 	//下面方法不能分离式，主界面关闭后，cmd也消失了
 	QStringList arguments;
 	arguments << "/K";
@@ -3308,7 +3311,7 @@ void CCNotePad::initToolBar()
 	m_pLexerActGroup->addAction(ui.actionAviSynth);
 	m_pLexerActGroup->addAction(ui.actionASN1);
 	m_pLexerActGroup->addAction(ui.actionSwift);
-	m_pLexerActGroup->addAction(ui.actionIntel_HEX); 
+	m_pLexerActGroup->addAction(ui.actionIntel_HEX);
 	m_pLexerActGroup->addAction(ui.actionGo);
 	m_pLexerActGroup->addAction(ui.actionTxt);
 	m_pLexerActGroup->addAction(ui.actionUserDefine);
@@ -3318,6 +3321,28 @@ void CCNotePad::initToolBar()
 	langsGroup->addAction(ui.actionEnglish);
 
 	connect(ui.menuLanguage, &QMenu::triggered, this, &CCNotePad::slot_lexerActTrig);
+
+	m_pEvalAccuracy = new QActionGroup(this);
+	auto uiacndp = QVector{ui.action1_decimal_places, ui.action2_decimal_places, ui.action3_decimal_places,
+		ui.action4_decimal_places, ui.action5_decimal_places, ui.action6_decimal_places, ui.action7_decimal_places,
+		ui.action8_decimal_places, ui.action9_decimal_places, ui.action10_decimal_places, ui.action11_decimal_places,
+		ui.action12_decimal_places, ui.action13_decimal_places, ui.action14_decimal_places, ui.action15_decimal_places
+	};
+	const int evalaccu = NddSetting::getKeyValueFromNumSets(EVAL_ACCURACY);
+	int i = 1; //C++20才支持在范围for中定义在其作用域的额外变量
+	for (auto & act: uiacndp) {
+		act->setChecked(bool(i==evalaccu));
+		m_pEvalAccuracy->addAction(act)->setData(QVariant(i++));
+	}
+	m_pEvalAccuracy->setExclusive(true);
+	connect(m_pEvalAccuracy, &QActionGroup::triggered, this, &CCNotePad::slot_eval_accuracy, Qt::QueuedConnection);
+
+	ui.actionEnterEval->setChecked(bool(NddSetting::getKeyValueFromNumSets(ENTER_EVAL)));
+	ui.actionQuestionEval->setChecked(bool(NddSetting::getKeyValueFromNumSets(QUESTION_EVAL)));
+	const auto enablejit = bool(NddSetting::getKeyValueFromNumSets(JIT_EVAL));
+	ui.actionJIT_eval_on_status_bar->setChecked(enablejit);
+	if( m_jitEvalLabel != nullptr )
+		m_jitEvalLabel->setVisible(enablejit);
 
 	//这是在网上看到的一个方法，使用一个widget把位置占住，让后面的action跑到最后面 去
 	QWidget* space = new QWidget();
@@ -3547,7 +3572,7 @@ int CCNotePad::findFileIsOpenAtPad(QString filePath)
 	return ret;
 }
 
-//判断新建名称是否已经存在，是 true 
+//判断新建名称是否已经存在，是 true
 bool CCNotePad::isNewFileNameExist(QString& fileName)
 {
 
@@ -3688,7 +3713,7 @@ void CCNotePad::on_roladFile(ScintillaEditView* pEdit,quint64 lastSize, qint64 c
 }
 #endif
 
-void CCNotePad::doReloadTxtFile(ScintillaEditView* pEdit, bool isOnTail, qint64 startReadSize) 
+void CCNotePad::doReloadTxtFile(ScintillaEditView* pEdit, bool isOnTail, qint64 startReadSize)
 {
 	//reloadEditFile 里面会关闭和新增tab，触发一系列的currentChanged
 	disconnect(ui.editTabWidget, &QTabWidget::currentChanged, this, &CCNotePad::slot_tabCurrentChanged);
@@ -3757,7 +3782,7 @@ bool CCNotePad::checkRoladFile(ScintillaEditView* pEdit, qint64 startReadSize)
 			}
 
 		}
-		else 
+		else
 		{
 			QString filePath = pEdit->property(Edit_View_FilePath).toString();
 
@@ -5772,7 +5797,7 @@ void CCNotePad::slot_actionRenameFile_toggle(bool checked)
 			if (oldName == fileName)
 			{
 				return;
-			} 
+			}
 
 
 			QFileInfo newfi(fileName);
@@ -7506,7 +7531,7 @@ void CCNotePad::on_findResultlineDoubleClick(QString* pFilePath, int pos, int en
 	if (pCurEdit != nullptr)
 	{
 		pCurEdit->execute(SCI_SETSEL, pos, end);
-	}	
+	}
 }
 
 #if 0
@@ -9792,7 +9817,7 @@ void CCNotePad::slot_formatXml()
 		}
 	}
 
-	if (reader.hasError()) 
+	if (reader.hasError())
 	{
 		ui.statusBar->showMessage(tr("XML format error, please check!"), MSG_EXIST_TIME);
 		QApplication::beep();
@@ -9952,6 +9977,33 @@ void CCNotePad::slot_shortcutManager()
 	pWin->show();
 }
 
+//表达式求值功能开关
+void CCNotePad::slot_enter_eval(bool check)
+{
+	NddSetting::updataKeyValueFromNumSets(ENTER_EVAL, check?1:0);
+}
+void CCNotePad::slot_question_eval(bool check)
+{
+	NddSetting::updataKeyValueFromNumSets(QUESTION_EVAL, check?1:0);
+}
+void CCNotePad::slot_jit_eval(bool check)
+{
+	NddSetting::updataKeyValueFromNumSets(JIT_EVAL, check?1:0);
+	m_jitEvalLabel->setVisible(check);
+}
+
+//表达式求值精度
+void CCNotePad::slot_eval_accuracy(QAction *action)
+{
+	NddSetting::updataKeyValueFromNumSets(EVAL_ACCURACY, action->data().toInt());
+}
+
+//表达式及时计算结果显示在状态栏
+void CCNotePad::set_eval_jit_value(QString val)
+{
+	m_jitEvalLabel->setText(val);
+}
+
 //处理当前按下ESC后，需要处理退出的事件
 void CCNotePad::on_quitActiveWindow()
 {
@@ -9973,7 +10025,7 @@ void CCNotePad::on_quitActiveWindow()
 	}
 }
 
-#if 0 
+#if 0
 //修改主题颜色//暂时不开始，发现MAC下有不开启深色的配置
 void CCNotePad::changeAppFontColor(QColor color)
 {

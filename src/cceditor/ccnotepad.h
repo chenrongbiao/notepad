@@ -149,6 +149,8 @@ public:
 	void changeMarkColor(int sytleId);
 	void setUserDefShortcutKey(int shortcutId);
 
+	void set_eval_jit_value(QString val);
+
 	QtLangSet* getLangSet();
 	void setEditLangs(ScintillaEditView* pEdit,LangType langs);
 #ifdef NO_PLUGIN
@@ -161,7 +163,7 @@ signals:
 	void signLinkNetServer();
 #ifdef Q_OS_WIN
 	void tailFileChange(ScintillaEditView*,qint64 lastSize, qint64 curSize);
-#endif 
+#endif
 public slots:
 	void slot_changeChinese();
 	void slot_changeEnglish();
@@ -364,6 +366,10 @@ private slots:
 	void slot_showWebAddr(bool check);
 	void slot_langFileSuffix();
 	void slot_shortcutManager();
+	void slot_enter_eval(bool check);
+	void slot_question_eval(bool check);
+	void slot_jit_eval(bool check);
+	void slot_eval_accuracy(QAction * action);
 	void on_lineEndChange(int index);
 	void on_tailfile(bool isOn);
 #ifdef Q_OS_WIN
@@ -498,6 +504,7 @@ private:
 	QLabel* m_lineNumLabel;
 	QLabel* m_langDescLabel;
 	QLabel* m_zoomLabel;
+	QLabel* m_jitEvalLabel;
 
 	QMenu* m_tabRightClickMenu;
 
@@ -513,6 +520,7 @@ private:
 	QActionGroup *m_pLineEndActGroup;
 	QActionGroup *m_pLexerActGroup;
 	QActionGroup *m_pIconSize;
+	QActionGroup *m_pEvalAccuracy;
 
 #if 0
 	QAction* m_quitAction;

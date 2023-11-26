@@ -482,12 +482,42 @@
      <addaction name="actionChinese"/>
      <addaction name="actionEnglish"/>
     </widget>
+    <widget class="QMenu" name="menuExprEval">
+     <property name="title">
+      <string>Expression evaluation</string>
+     </property>
+     <widget class="QMenu" name="menuEvalAccuracy">
+      <property name="title">
+       <string>Evaluation Accuracy</string>
+      </property>
+      <addaction name="action1_decimal_places"/>
+      <addaction name="action2_decimal_places"/>
+      <addaction name="action3_decimal_places"/>
+      <addaction name="action4_decimal_places"/>
+      <addaction name="action5_decimal_places"/>
+      <addaction name="action6_decimal_places"/>
+      <addaction name="action7_decimal_places"/>
+      <addaction name="action8_decimal_places"/>
+      <addaction name="action9_decimal_places"/>
+      <addaction name="action10_decimal_places"/>
+      <addaction name="action11_decimal_places"/>
+      <addaction name="action12_decimal_places"/>
+      <addaction name="action13_decimal_places"/>
+      <addaction name="action14_decimal_places"/>
+      <addaction name="action15_decimal_places"/>
+     </widget>
+     <addaction name="actionEnterEval"/>
+     <addaction name="actionQuestionEval"/>
+     <addaction name="actionJIT_eval_on_status_bar"/>
+     <addaction name="menuEvalAccuracy"/>
+    </widget>
     <addaction name="actionOptions"/>
     <addaction name="menuLanguage_2"/>
     <addaction name="actionLanguage_Format"/>
     <addaction name="actionDefine_Language"/>
     <addaction name="actionLanguage_File_Suffix"/>
     <addaction name="actionShortcut_Key_Manager"/>
+    <addaction name="menuExprEval"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -2069,6 +2099,162 @@
     <string>Md5/Sha</string>
    </property>
   </action>
+  <action name="actionEnterEval">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use Enter key</string>
+   </property>
+  </action>
+  <action name="actionQuestionEval">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use ? key</string>
+   </property>
+  </action>
+  <action name="action1_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1 decimal places</string>
+   </property>
+  </action>
+  <action name="action2_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>2 decimal places</string>
+   </property>
+  </action>
+  <action name="action3_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>3 decimal places</string>
+   </property>
+  </action>
+  <action name="action4_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>4 decimal places</string>
+   </property>
+  </action>
+  <action name="action5_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>5 decimal places</string>
+   </property>
+  </action>
+  <action name="action6_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>6 decimal places</string>
+   </property>
+  </action>
+  <action name="action7_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>7 decimal places</string>
+   </property>
+  </action>
+  <action name="action8_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>8 decimal places</string>
+   </property>
+  </action>
+  <action name="action9_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>9 decimal places</string>
+   </property>
+  </action>
+  <action name="action10_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>10 decimal places</string>
+   </property>
+  </action>
+  <action name="action11_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>11 decimal places</string>
+   </property>
+  </action>
+  <action name="action12_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>12 decimal places</string>
+   </property>
+  </action>
+  <action name="action13_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>13 decimal places</string>
+   </property>
+  </action>
+  <action name="action14_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>14 decimal places</string>
+   </property>
+  </action>
+  <action name="action15_decimal_places">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>15 decimal places</string>
+   </property>
+  </action>
+  <action name="actionJIT_eval_on_status_bar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>JIT eval on status bar</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -3499,6 +3685,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionEnterEval</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>CCNotePad</receiver>
+   <slot>slot_enter_eval(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>728</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuestionEval</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>CCNotePad</receiver>
+   <slot>slot_question_eval(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>728</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionJIT_eval_on_status_bar</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>CCNotePad</receiver>
+   <slot>slot_jit_eval(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>728</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slot_actionNewFile_toggle(bool)</slot>
@@ -3602,6 +3836,9 @@
   <slot>slot_showWebAddr(bool)</slot>
   <slot>slot_langFileSuffix()</slot>
   <slot>slot_shortcutManager()</slot>
+  <slot>slot_enter_eval(bool)</slot>
+  <slot>slot_question_eval(bool)</slot>
+  <slot>slot_jit_eval(bool)</slot>
   <slot>on_md5hash()</slot>
  </slots>
 </ui>

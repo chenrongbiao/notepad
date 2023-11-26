@@ -1,7 +1,7 @@
 # Notepad--.cmake
 
 # Notepad-- 核心构建
-# 在模块化构建中，这个部分代表着构建 Notepad-- 
+# 在模块化构建中，这个部分代表着构建 Notepad--
 # 1. 默认构建时产出的目标为 Notepad--
 # 2. 在此处可对 Notepad-- 目标进行详细的构建计划
 
@@ -11,11 +11,14 @@ if(TRUE)
     spark_aux_source_paths(CCEditorSources
         src
         src/cceditor
+        src/tinyexpr-plusplus
     )
     spark_add_executable(${PROJECT_NAME} ${CCEditorSources} ${QRC_SOURCES})
+    target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
     target_include_directories(${PROJECT_NAME} PRIVATE
         ${PROJECT_SOURCE_DIR}/src
         ${PROJECT_SOURCE_DIR}/src/cceditor
+        ${PROJECT_SOURCE_DIR}/src/tinyexpr-plusplus
 
         ${PROJECT_SOURCE_DIR}/src/qscint/src
         ${PROJECT_SOURCE_DIR}/src/qscint/src/Qsci
@@ -44,15 +47,15 @@ if(TRUE)
 endif(TRUE)
 
 
-# Notepad-- 目标在构建时依赖了一些其它内容，像先前构建的 QSci 目标、Qt5::XmlPatterns 
+# Notepad-- 目标在构建时依赖了一些其它内容，像先前构建的 QSci 目标、Qt5::XmlPatterns
 # Notepad-- 程序构建...配置
 
 # ----------------- Notepad-- 构建宏支持相关  ----------------- #
 
 if(WIN32)
     # 在 Windows 中构建时，需要关注此库的构建形式，QScintilla 应该以何种方式编译
-    target_compile_definitions(${PROJECT_NAME} 
-        PRIVATE 
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
             NO_PLUGIN       # 开启插件支持
             QSCINTILLA_DLL  # 目前在 Windows 中使用 QSci 库时应该采用 Q_DECL_IMPORT
                             # 控制 QSCINTILLA_EXPORT 符号应为 Q_DECL_IMPORT
@@ -61,8 +64,8 @@ endif(WIN32)
 
 if(UNIX)
     # 在 Windows 中构建时，需要关注此库的构建形式，QScintilla 应该以何种方式编译
-    target_compile_definitions(${PROJECT_NAME} 
-        PRIVATE 
+    target_compile_definitions(${PROJECT_NAME}
+        PRIVATE
             NO_PLUGIN       # 开启插件支持
     )
 endif(UNIX)

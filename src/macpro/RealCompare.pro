@@ -9,12 +9,14 @@ QT += core gui widgets concurrent network macextras
 
 HEADERS	+= *.h \
            cceditor/ccnotepad.h \
-           cceditor/filemanager.h
-		
+           cceditor/filemanager.h \
+           tinyexpr-plusplus/tinyexpr.h
+
 SOURCES	+= *.cpp *.cc \
            cceditor/ccnotepad.cpp \
-           cceditor/filemanager.cpp
-		
+           cceditor/filemanager.cpp \
+           tinyexpr-plusplus/tinyexpr.cpp
+
 FORMS += *.ui \
          cceditor/ccnotepad.ui
 
@@ -28,7 +30,9 @@ INCLUDEPATH += cceditor
 DEFINES +=  QSCINTILLA_DLL
 
 TRANSLATIONS += realcompare_zh.ts
-	
+
+QMAKE_CXXFLAGS += -std=c++17
+
 win32 {
    if(contains(QMAKE_HOST.arch, x86_64)){
     CONFIG(Debug, Debug|Release){

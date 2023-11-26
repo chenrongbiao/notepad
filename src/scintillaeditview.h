@@ -4,10 +4,12 @@
 #include <SciLexer.h>
 #include <QMouseEvent>
 #include <QMimeData>
+#include <QRegularExpression>
 #include <unordered_set>
 #include "common.h"
 #include "Sorters.h"
 #include "markdownview.h"
+#include "tinyexpr.h"
 
 
 typedef sptr_t(*SCINTILLA_FUNC) (sptr_t ptr, unsigned int, uptr_t, sptr_t);
@@ -48,11 +50,11 @@ enum TextCaseType
 	RANDOMCASE
 };
 
-enum Comment_Mode 
-{ 
-	cm_comment = 0, 
-	cm_uncomment, 
-	cm_toggle 
+enum Comment_Mode
+{
+	cm_comment = 0,
+	cm_uncomment,
+	cm_toggle
 };
 const bool L2R = true;
 const bool R2L = false;
@@ -171,7 +173,7 @@ public:
 	void bookmarkToggle(intptr_t lineno) const;
 	void bookmarkClearAll() const;
 	void bookmarkNext(bool forwardScan);
-	
+
 	void cutMarkedLines();
 	void copyMarkedLines();
 	void replaceMarkedline(int ln, QByteArray & str);
@@ -204,7 +206,7 @@ public:
 	void setGlobalFgColor(int style);
 	void setGlobalBgColor(int style);
 	void setGlobalFont(int style);
-	
+
 	//获取当前块的开始行号。只在大文件只读模式下有效。其余模式下均返回0
 	quint32 getBigTextBlockStartLine();
 	void setBigTextBlockStartLine(quint32 line);
@@ -267,7 +269,7 @@ protected:
 	void mouseDoubleClickEvent(QMouseEvent *e) override;
 	void contextUserDefineMenuEvent(QMenu * menu) override;
 
-	
+
 
 public slots:
 	void updateLineNumberWidth(int lineNumberMarginDynamicWidth=0);
@@ -292,6 +294,16 @@ private:
 	void replaceSelWith(const char* replaceText);
 
 	void showWordNums();
+
+	enum evltype {EVAL_ENTER, EVAL_QUESTION, EVAL_JIT};
+	bool tinyexprCalc(evltype evt);
+	static inline const QSet<QChar> s_teSymbols = {
+		'+','-','*','/',':','^','%','!','<','>','(',')',
+		',',' ','\t','m','h','s',
+		'0','1','2','3','4','5','6','7','8','9'
+	};
+	static inline const QSet<QChar> s_teLookfwdSymbols = {'|','&'};
+
 private slots:
 	void slot_delayWork();
 	void slot_scrollYValueChange(int value);
@@ -330,6 +342,8 @@ private:
 	QMap<qint64, quint32> m_addrLineNumMap;//大文本模式下，地址和行号的对应关系。只需要首尾即可
 
 	QPointer<MarkdownView> m_markdownWin;
+
+	te_parser m_tinyEpr;
 
 public:
 	static int s_tabLens;

@@ -30,6 +30,11 @@ static QString RECENT_OPEN_FILE = "recentopenfile";
 static QString LAST_OPEN_DIR = "lastdir";
 static QString CLEAR_OPENFILE_ON_CLOSE = "clearopenfile"; //关闭时清空历史文件
 
+static QString ENTER_EVAL = "entereval"; //是否启用回车键求值
+static QString QUESTION_EVAL = "questioneval"; //是否启用问号键求值
+static QString JIT_EVAL = "jiteval"; //是否启用及时求值并显示在状态栏
+static QString EVAL_ACCURACY = "evalaccuracy"; //求值浮点精度
+
 
 //下面这个是winpos.ini中的key，避免单个文件太大，拖慢启动速度
 static QString BATCH_FIND_REPLACE_POS = "bfpos";//批量查找替换窗口的大小
