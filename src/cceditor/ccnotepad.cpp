@@ -479,6 +479,7 @@ FileExtLexer s_fileExtMapLexerId[FileExtMapLexerIdLen] = {
 {QString("htm"), L_HTML},
 {QString("htmls"), L_HTML},
 {QString("ini"), L_INI},
+{QString("desktop"), L_INI},
 {QString("js"), L_JAVASCRIPT},
 {QString("ts"), L_TYPESCRIPT},
 {QString("css"), L_CSS},
