@@ -57,8 +57,10 @@
 #include <QDateTime>
 #include <QShortcut>
 #ifdef Q_OS_WIN
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 #include <QXmlQuery>
 #include <QXmlFormatter>
+#endif
 #endif
 #include <QBuffer>
 #include <QXmlStreamReader>
@@ -557,7 +559,9 @@ void initFileTypeLangMap()
 		//把新语言tagName,和关联ext单独存放起来ext_tag.ini。只读取一个文件就能获取所有，避免遍历慢
 		QString extsFile = QString("notepad/userlang/ext_tag");//ext_tag是存在所有tag ext的文件
 		QSettings qs(QSettings::IniFormat, QSettings::UserScope, extsFile);
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		qs.setIniCodec("UTF-8");
+	#endif
 
 		QStringList keys = qs.allKeys();
 		//LangType lexId = L_USER_TXT;
@@ -5225,7 +5229,11 @@ void  CCNotePad::initFileListDockWin()
 			}
 		});
 		m_dockFileListWin->setAttribute(Qt::WA_DeleteOnClose);
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		m_dockFileListWin->layout()->setMargin(0);
+	#else
+		m_dockFileListWin->layout()->setContentsMargins(0, 0, 0, 0);
+	#endif
 		m_dockFileListWin->layout()->setSpacing(0);
 
 		//暂时不提供关闭，因为关闭后需要同步菜单的check状态
@@ -5659,7 +5667,11 @@ void CCNotePad::saveTabEdit(int tabIndex)
 	if (pEdit != nullptr)
 	{
 		//如果是新建的文件，则弹出保存对话框，进行保存
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		if (pEdit->property(Edit_File_New) >= 0)
+	#else
+		if (pEdit->property(Edit_File_New).toInt() >= 0)
+	#endif
 		{
 			QString filter("Text files (*.txt);;XML files (*.xml);;h files (*.h);;cpp file(*.cpp);;All types(*.*)");
 			QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), filter);
@@ -5826,7 +5838,11 @@ void CCNotePad::slot_actionSaveAsFile_toggle(bool /*checked*/)
 	if (pEdit != nullptr)
 	{
 		//如果是新建的文件，则弹出保存对话框，进行保存
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		if (pEdit->property(Edit_File_New) >= 0)
+	#else
+		if (pEdit->property(Edit_File_New).toInt() >= 0)
+	#endif
 		{
 			QString filter("Text files (*.txt);;XML files (*.xml);;h files (*.h);;cpp file(*.cpp);;All types(*.*)");
 			QString fileName = QFileDialog::getSaveFileName(this, tr("Save File As ..."),QString(), filter);
@@ -6116,7 +6132,11 @@ void CCNotePad::saveTempFile(ScintillaEditView* pEdit,int index, QSettings& qs)
 		//把文件记录到qs中去
 		//index一定不能重复。n表示新建
 		//如果是新建的文件
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		if (pEdit->property(Edit_File_New) >= 0)
+	#else
+		if (pEdit->property(Edit_File_New).toInt() >= 0)
+	#endif
 		{
 			//不再保存新建的非脏文件。因为一定是空的，意义不大
 			//qs.setValue(QString("%1").arg(index), QString("%1|1").arg(fileName));
@@ -6136,7 +6156,11 @@ void CCNotePad::saveTempFile(ScintillaEditView* pEdit,int index, QSettings& qs)
 	}
 
 	//如果是新建的文件
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	if (pEdit->property(Edit_File_New) >= 0)
+#else
+	if (pEdit->property(Edit_File_New).toInt() >= 0)
+#endif
 	{
 		QString qsSavePath = qs.fileName();
 
@@ -6270,7 +6294,9 @@ void CCNotePad::closeAllFileStatic()
 {
 	QString tempFileList = QString("notepad/temp/list");
 	QSettings qs(QSettings::IniFormat, QSettings::UserScope, tempFileList);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	qs.setIniCodec("UTF-8");
+#endif
 	QString qsSavePath = qs.fileName();
 	QFileInfo fi(qsSavePath);
 	QDir saveDir = fi.dir();
@@ -6957,7 +6983,9 @@ int CCNotePad::initFindWindow(FindTabIndex type)
 			//从历史查找记录文件中加载
 			QString searchHistory = QString("notepad/searchHistory");//历史查找记录
 			QSettings qs(QSettings::IniFormat, QSettings::UserScope, searchHistory);
+		#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 			qs.setIniCodec("UTF-8");
+		#endif
 
 			if (qs.contains("keys"))
 			{
@@ -7073,7 +7101,9 @@ void CCNotePad::slot_saveSearchHistory()
 	//从历史查找记录文件中加载
 	QString searchHistory = QString("notepad/searchHistory");//历史查找记录
 	QSettings qs(QSettings::IniFormat, QSettings::UserScope, searchHistory);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	qs.setIniCodec("UTF-8");
+#endif
 
 	if (s_findHistroy.count() > 15)
 	{
@@ -7306,7 +7336,11 @@ void  CCNotePad::initFindResultDockWin()
 		m_dockSelectTreeWin = new QDockWidget(tr("Find result"), this);
 		connect(m_dockSelectTreeWin, &QDockWidget::dockLocationChanged, this, &CCNotePad::slot_findResultPosChangeed);
 
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		m_dockSelectTreeWin->layout()->setMargin(0);
+	#else
+		m_dockSelectTreeWin->layout()->setContentsMargins(0, 0, 0, 0);
+	#endif
 		m_dockSelectTreeWin->layout()->setSpacing(0);
 
 		//暂时不提供关闭，因为关闭后需要同步菜单的check状态
@@ -8294,7 +8328,11 @@ bool CCNotePad::nativeOpenfile(QString openFilePath)
 	this->activateWindow();
 	return true;
 }
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 bool CCNotePad::nativeEvent(const QByteArray & eventType, void * message, long * result)
+#else
+bool CCNotePad::nativeEvent(const QByteArray & eventType, void * message, qintptr * result)
+#endif
 {
 	MSG *param = static_cast<MSG *>(message);
 
@@ -8873,7 +8911,9 @@ int CCNotePad::restoreLastFiles()
 
 	QString tempFileList = QString("notepad/temp/list");
 	QSettings qs(QSettings::IniFormat, QSettings::UserScope, tempFileList);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	qs.setIniCodec("UTF-8");
+#endif
 
 	QStringList fileList = qs.allKeys();
 	//从小到大排序一下。这里是按照ASCII排序，不得行。

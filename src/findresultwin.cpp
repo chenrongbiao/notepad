@@ -136,7 +136,11 @@ QString FindResultWin::highlightFindText(FindRecord& record)
 			head = QString("<font style='font-size:14px;'>%1</font>").arg(head);
 			src = QString("<font style='font-size:14px;background-color:#ffffbf'>%1</font>").arg(QString(utf8bytes.mid(targetStart, targetLens)).toHtmlEscaped());
 			tail = QString(utf8bytes.mid(tailStart));
+		#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 			if (tail > MAX_TAIL_LENGTH)
+		#else
+			if (tail.size() > MAX_TAIL_LENGTH)
+		#endif
 			{
 				tail = (tail.mid(0, MAX_TAIL_LENGTH) + "...").toHtmlEscaped();
 			}
@@ -171,7 +175,11 @@ QString FindResultWin::highlightFindText(FindRecord& record)
 			src = QString("<font style='font-size:14px;font-weight:bold;color:#ffaa00'>%1</font>").arg(QString(utf8bytes.mid(targetStart, targetLens)).toHtmlEscaped());
 
 			QString tailContens = QString(utf8bytes.mid(tailStart));
+		#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 			if (tailContens > MAX_TAIL_LENGTH)
+		#else
+			if (tailContens.size() > MAX_TAIL_LENGTH)
+		#endif
 			{
 				tailContens = (tailContens.mid(0, MAX_TAIL_LENGTH) + "...").toHtmlEscaped();
 			}

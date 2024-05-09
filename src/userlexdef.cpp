@@ -24,7 +24,9 @@ bool UserLexDef::readUserSettings(QString langTagName)
 
 	QString userLangFile = QString("notepad/userlang/%1").arg(langTagName);
 	QSettings qs(QSettings::IniFormat, QSettings::UserScope, userLangFile);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	qs.setIniCodec("UTF-8");
+#endif
 
 	if (!qs.contains(QString("mz")))
 	{
@@ -93,13 +95,19 @@ bool UserLexDef::writeUserSettings(QString langTagName)
 
 	QString userLangFile = QString("notepad/userlang/%1").arg(langTagName);
 	QSettings qs(QSettings::IniFormat, QSettings::UserScope, userLangFile);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	qs.setIniCodec("UTF-8");
+#endif
 	qs.clear();
 
 	qs.setValue("mz", langTagName);
 	qs.setValue("mother", m_motherLang); 
 	qs.setValue("ext", m_extTypes);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	qs.setValue("keyword", m_keyword.data());
+#else
+	qs.setValue("keyword", QString(m_keyword.data()));
+#endif
 
 	return true;
 }

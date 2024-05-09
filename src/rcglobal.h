@@ -8,14 +8,14 @@
 //#define TEST_PRE
 
 #ifdef TEST_PRE
-static const char* VersionStr = u8"(内部测试非稳定) v2.0.0";
+static const char* VersionStr = u8"(内部测试非稳定) v2.0.0, 核心编辑器组件 2.11";
 #else
 
 static const char* VersionStr = "v2.0.0";
 #endif // TEST_PRE
 
-
-#define NO_PLUGIN 1
+// Bug: 在 Visual Studio 中引发无法构建的问题，此处被重复定义(在 cmake 中已对其定义)
+// #define NO_PLUGIN 1
 
 #define CMP_CODE_NOEQUAL
 

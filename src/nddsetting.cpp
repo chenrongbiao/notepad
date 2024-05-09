@@ -50,7 +50,9 @@ void NddSetting::init()
 	QString qsSetPath = qs.fileName();
 
 	s_nddSet = new QSettings(QSettings::IniFormat, QSettings::UserScope, settingDir);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 	s_nddSet->setIniCodec("UTF-8");
+#endif
 	bool initOk = true;
 
 	auto initNddSet = []() {
@@ -345,7 +347,9 @@ void NddSetting::nddDelaySetInit()
 		QString qsSetPath = qs.fileName();
 
 		s_nddDelaySet = new QSettings(QSettings::IniFormat, QSettings::UserScope, settingDir);
+	#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 		s_nddDelaySet->setIniCodec("UTF-8");
+	#endif
 	}
 }
 
